@@ -1,50 +1,67 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import tw from 'twin.macro'
-import {SiAirplayvideo} from 'react-icons/si'
-import User from '../components/User'
+import { IoAdd } from "react-icons/io5";
+import { SiAirplayvideo } from "react-icons/si";
+import { Link } from "react-router-dom";
+import styled, { css } from "styled-components";
+import tw from "twin.macro";
+import routes from "../common/routes";
+import User from "../components/User";
 
 const Navbar = () => {
-
-	return (
-		<Wrapper>
-			<LogoButton>
-				<SiAirplayvideo />
-				<p className='text'>TukTok</p>
-			</LogoButton>
-			<User />
-		</Wrapper>
-	)
-}
+  return (
+    <Wrapper>
+      <LogoLink to={'/'}>
+        <SiAirplayvideo />
+        <p className="text">TukTok</p>
+      </LogoLink>
+      <CreatePostLink to={routes.createPost}>
+        <span>Create post</span>
+        <IoAdd />
+      </CreatePostLink>
+      <User />
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.nav(() => [
-	tw`flex items-center`,
-	css`
-		padding: 0 var(--gap-x-global);
-		height: 2rem;
-		border-bottom: var(--hr-border);
-
-		${User} {
-			margin-left: auto;
-		}
-	`
-])
-
-const LogoButton = styled.button(() => [
-  tw`flex items-center space-x-1 text-pink-600`,
+  tw`flex items-center gap-x-2`,
   css`
-		font-size: 1em;
-		
-		.text {
-			font-family: 'Phudu', cursive;
-			font-weight: 500;
-		}
+    padding: 0 var(--gap-x-global);
+    height: var(--nav-h);
+    border-bottom: var(--hr-border);
 
-		svg {
-			font-size: 0.79em;
-			margin-bottom: -3px;
-		}
-	`,
+    ${User} {
+      margin-left: auto;
+    }
+  `,
 ]);
 
-export default styled(Navbar)``
+const CreatePostLink = styled(Link)(() => [
+  tw`flex space-x-0.5 items-center border-2 font-thin border-pink-400 text-pink-600 rounded-sm`,
+  css`
+		margin-right: auto;
+		padding: 0.1rem 0.4rem;
+		font-size: 0.5rem;
+    svg {
+      margin-bottom: -0.05rem;
+    }
+  `,
+]);
+
+const LogoLink = styled(Link)(() => [
+  tw`flex items-center space-x-1 text-pink-600`,
+  css`
+    font-size: 1em;
+
+    .text {
+      font-family: "Phudu", cursive;
+      font-weight: 500;
+    }
+
+    svg {
+      font-size: 0.79em;
+      margin-bottom: -3px;
+    }
+  `,
+]);
+
+export default styled(Navbar)``;

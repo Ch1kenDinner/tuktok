@@ -3,15 +3,23 @@ import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api } from "../api";
+import { Input, styles } from "../common/components";
 import { DP } from "../common/types";
+import useCustomState from "../hooks/useCustomState";
 import { mainActions } from "../redux/mainSlice";
 
-const styles = {
-  border: tw`text-pink-600 border-2 border-pink-400 rounded-sm`,
-};
+interface IInitState {
+	isLoading: boolean
+}
+
+const initState: IInitState = {
+	isLoading: false
+}
 
 const Login = ({ className }: DP) => {
   const dispatch = useDispatch();
+	const state = useCustomState(initState)
+	
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,13 +36,13 @@ const Login = ({ className }: DP) => {
   };
 
   const handleFetchResponse = (response) => {
-		console.log('response', response)
+		state.isLoading = true
     api.post("/login", response).then(({ data }) => {
       localStorage.setItem("profile", JSON.stringify(data));
       dispatch(
         mainActions.setField({ field: "loginFormVisibility", value: false })
       );
-    });
+    }).finally(() => {state.isLoading = false});
   };
 
   useEffect(() => {
@@ -56,9 +64,9 @@ const Login = ({ className }: DP) => {
   return (
     <Wrapper onClick={handleHide} className={className}>
       <Form onSubmit={handleSubmit}>
-        <Input name={"email"} type="email" placeholder="Email" />
-        <Input name={"password"} placeholder="Password" />
-        <SubmitButton>Log In</SubmitButton>
+        <Input disabled={state.isLoading} name={"email"} type="email" placeholder="Email" />
+        <Input disabled={state.isLoading} name={"password"} type='password' placeholder="Password" />
+        <SubmitButton disabled={state.isLoading} type='submit'>Log In</SubmitButton>
         <GoogleWrapper id="googleBtn"></GoogleWrapper>
       </Form>
     </Wrapper>
@@ -66,7 +74,7 @@ const Login = ({ className }: DP) => {
 };
 
 const Wrapper = styled.div(() => [
-  tw`absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center`,
+  tw`absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center`,
   css`
     background-color: rgba(0, 0, 0, 0.3);
   `,
@@ -79,15 +87,6 @@ const Form = styled.form(() => [
   `,
 ]);
 
-const Input = styled.input(() => [
-  tw`w-full placeholder:(text-pink-200)`,
-  styles.border,
-  css`
-    outline: none;
-    font-size: 0.5rem;
-    padding: 0.2rem 0.4rem;
-  `,
-]);
 
 const SubmitButton = styled.button(() => [
   tw`w-full text-pink-800 uppercase`,

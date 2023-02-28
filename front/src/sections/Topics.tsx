@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api, apiRoutes } from "../api";
+import { capitalize } from "../common/helpers";
+import { DP } from "../common/types";
+import { ITopic } from "../components/TopicsInput";
 import useCustomState from "../hooks/useCustomState";
 
 interface IInitState {
 	loading: boolean,
-	data: any[]
+	data: ITopic[]
 }
 
 const initState: IInitState = {
@@ -14,15 +17,14 @@ const initState: IInitState = {
   data: [],
 };
 
-const Topics = () => {
+const Topics = ({className}: DP) => {
   const state = useCustomState(initState);
 
   const fetchTopics = async () => {
     state.loading = true;
     api
-      .get(apiRoutes.topics)
+      .get<{topics: ITopic[]}>(apiRoutes.topics)
       .then(({ data }) => {
-				console.log('data', data)
 				state.data = data.topics
 			})
       .finally(() => (state.loading = false));
@@ -39,14 +41,14 @@ const Topics = () => {
 		return (
       <List>
         {state.data.map((el) => (
-          <Item>{el}</Item>
+          <Item>{capitalize(el.title)}</Item>
         ))}
       </List>
     );
 	}
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <h3>Popular topics</h3>
 			{returnList()}
     </Wrapper>
@@ -68,12 +70,14 @@ const Wrapper = styled.div(() => [
   `,
 ]);
 
-const List = styled.ul(() => [tw`flex gap-2`]);
+const List = styled.ul(() => [tw`flex flex-wrap gap-1`]);
 
 const Item = styled.button(() => [
-  tw`flex items-center text-pink-400 border-2 border-pink-600 rounded-3xl`,
+  tw`border-[1px] rounded-2xl border-pink-400 text-pink-600`,
   css`
-    padding: 0.5em;
+    font-size: 0.4rem;
+    padding: 0.1rem 0.4rem;
+    height: min-content;
   `,
 ]);
 

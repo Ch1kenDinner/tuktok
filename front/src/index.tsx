@@ -15,6 +15,7 @@ const GlobalStyles = createGlobalStyle`
 	:root {
 		--gap-x-global: max(2.5%, 1vw);
 		--hr-border: 1px solid #b1b1b177;
+		--nav-h: 2rem;
 	}
 `;
 

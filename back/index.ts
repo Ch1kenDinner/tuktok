@@ -3,8 +3,9 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import { loginRouter } from "./routes/login";
+import { videoRouter } from "./routes/post";
 import { topicsRouter } from "./routes/topics";
-import { videoRouter } from "./routes/video";
+import { userRouter } from "./routes/user";
 
 mongoose
   .connect(process.env.REACT_APP_MONGO_URL!)
@@ -18,19 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "30mb" }));
 
 export let mainVideoBucket;
-// (() => {
-//   mongoose.connection.on("connected", () => {
-//     mainVideoBucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-//       bucketName: "mainVideoBucket",
-//     });
-//   });
-// })();
 mongoose.connection.on("connected", () => {
   mainVideoBucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
     bucketName: "mainVideoBucket",
   });
 });
 
-app.use('/topic', topicsRouter);
+app.use("/topic", topicsRouter);
 app.use("/video", videoRouter);
-app.use('/login', loginRouter)
+app.use("/login", loginRouter);
+app.use("/user", userRouter);

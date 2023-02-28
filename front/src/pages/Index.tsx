@@ -9,30 +9,24 @@ import JSZip from 'jszip'
 import useCustomState from '../hooks/useCustomState'
 import CreatePostForm from '../sections/CreatePostForm'
 import Info from '../sections/Info'
+import Posts from '../sections/Posts'
 
 
 const Index = () => {
 
 	return (
-    <Wrapper>
-      <Navbar />
-			<Content>
-				<Info />
-			</Content>
-    </Wrapper>
+		<Wrapper>
+			<Info />
+			<Posts />
+		</Wrapper>
   );
 }
 
 const Wrapper = styled.div(() => [
-	tw``,
-])
-
-const Content = styled.div(() => [
-	tw`flex`,
 	css`
-		${Info} {
-			max-width: 30%;
-		}
+		height: calc(100vh - var(--nav-h));
+		display: grid;
+		grid-template-columns: 1fr 3fr;
 	`
 ])
 

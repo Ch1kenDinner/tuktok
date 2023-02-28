@@ -1,7 +1,8 @@
+import bcryptjs from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
-import { IUserModel, UserModel } from "../models/user";
-import bcryptjs from 'bcryptjs'
+import { IImageSchema } from "../archive/image";
+import { IUserSchema, UserModel } from "../models/user";
 
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
@@ -18,23 +19,25 @@ const verifyToken = async (token) => {
   }
 };
 
+
 export const postLogin = async (req, res) => {
   const { credential, email, password } = req.body;
 
-  let user: IUserModel;
+  let user: IUserSchema;
+
   if (credential) {
     const googleData = await verifyToken(credential);
     if (!googleData?.email || !googleData.sub)
       return res.status(400).json({ message: "Invalid verify token response" });
+
     user = {
       email: googleData.email,
       sub: googleData.sub,
-      icon: googleData.picture,
     };
   } else if (email && password) {
     user = {
       email,
-      password: bcryptjs.hashSync(password, 12)
+      password: bcryptjs.hashSync(password, 12),
     };
   } else {
     return res
@@ -42,24 +45,28 @@ export const postLogin = async (req, res) => {
       .json({ message: "Invalid credentials or email with password" });
   }
 
-  const currentUser = await UserModel.findOne({ email: user.email });
-  if (!currentUser) {
-    const currentUser = await UserModel.create(user);
-    currentUser.save();
+  let existingUser = await UserModel.findOne({ email: user.email });
+  if (!existingUser) {
+    existingUser = await UserModel.create(user);
+    await existingUser.save();
+  } else {
+    if (existingUser.password) {
+      const isPasswordCorrect = bcryptjs.compareSync(
+        password,
+        existingUser.password
+      );
+      if (!isPasswordCorrect)
+        return res.status(400).json({ message: "Invalid password" });
+    }
   }
-  if (currentUser) {
-		if (currentUser.password) {
-			const isPasswordCorrect = bcryptjs.compareSync(password, currentUser.password)
-			if (!isPasswordCorrect) return res.status(400).json({message: 'Invalid password'})
-		}
-    const token = jwt.sign(
-      { email: currentUser.email, id: currentUser._id },
-      process.env.REACT_APP_JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
-    return res.status(200).json({
-      token,
-      user: { icon: currentUser.icon, email: currentUser.email },
-    });
-  }
+  const token = jwt.sign(
+    { email: existingUser.email, id: existingUser._id },
+    process.env.REACT_APP_JWT_SECRET!,
+    { expiresIn: "1d" }
+  );
+
+  return res.status(200).json({
+    token,
+    user: { picture: existingUser.picture, email: existingUser.email },
+  });
 };
