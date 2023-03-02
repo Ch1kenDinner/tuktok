@@ -1,9 +1,22 @@
+import { useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
+import routes from "../common/routes";
 import { DP } from "../common/types";
+import { mainActions } from "../redux/mainSlice";
 import CreatePostForm from "../sections/CreatePostForm";
 
 const CreatePost = ({ className }: DP) => {
+
+	const profile = localStorage.getItem('profile')
+	const dispatch = useDispatch()
+
+	if (!profile) {
+		dispatch(mainActions.setField({field: 'loginFormVisibility', value: true}))
+		return <Navigate to={routes.index} />;
+	}
+
   return (
     <Wrapper>
 			<Header>Create post</Header>

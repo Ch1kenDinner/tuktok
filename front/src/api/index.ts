@@ -4,10 +4,11 @@ export const BASE_URL = "http://localhost:5000";
 
 export const apiRoutes = {
   topics: "/topic/all",
-  getPostsPreview: "/video/all",
-  postVideo: "/video/upload",
-	getVideo: (videoId: string) => `/video/${videoId}`,
-	uploadAvatar: '/user/upload/avatar'
+  getPosts: "/post/all",
+	getPostsByTopics: '/post/byTopics',
+  postPost: "/post/upload",
+  getVideo: (videoId: string) => `/video/${videoId}`,
+  uploadAvatar: "/user/upload/avatar",
 };
 
 export const api = axios.create({ baseURL: BASE_URL });
@@ -25,7 +26,7 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status == 401) {
       localStorage.clear();
-			window.location.replace('/')
+      window.location.replace("/");
     }
     return Promise.reject(error);
   }

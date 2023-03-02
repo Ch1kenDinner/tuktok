@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getPostsPreview, getVideo, postVideo } from "../controllers/post";
+import { getPosts, getPostsByTopics, postVideo } from "../controllers/post";
 import { auth } from "../middleware/auth";
 import { upload } from "../middleware/uploader";
 
-export const videoRouter = Router();
+export const postRouter = Router();
 
-videoRouter.get("/all", getPostsPreview);
-videoRouter.get("/:videoId", getVideo);
-videoRouter.post("/upload", auth, upload().single("video"), postVideo);
+postRouter.get("/all", getPosts);
+postRouter.post("/upload", auth, upload().single("video"), postVideo);
+postRouter.post('/byTopics', getPostsByTopics)

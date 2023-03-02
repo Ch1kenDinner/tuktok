@@ -30,7 +30,7 @@ const CreatePostForm = () => {
     state.isLoading = true;
     api
       .post(
-        apiRoutes.postVideo,
+        apiRoutes.postPost,
         { title, video, topics },
         { headers: { "Content-Type": "multipart/form-data" } }
       )

@@ -15,19 +15,6 @@ export interface ITopicSelected {
   isSelected: boolean;
 }
 
-// interface IIinitState {
-//   topics: ITopicSelected[];
-//   inputValue: string;
-//   isOpened: boolean;
-//   isLoading: boolean;
-// }
-
-// const initState: IIinitState = {
-//   topics: [],
-//   isOpened: false,
-//   isLoading: false,
-//   inputValue: "",
-// };
 
 interface ITopicsInput extends DPInput {
   onChangeTopics: (topics: ITopic[]) => any;
@@ -114,7 +101,7 @@ const TopicsInput = ({ className, onChangeTopics, disabled }: ITopicsInput) => {
       inputRef.current?.focus();
     } else {
       setTopics((prev) => prev.filter((el) => el.isSelected));
-      onChangeTopics(topics.map((el) => el.topic));
+      onChangeTopics(topics.filter((el) => el.isSelected).map((el) => el.topic));
     }
   }, [opening]);
 

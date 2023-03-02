@@ -57,7 +57,9 @@ export const postLogin = async (req, res) => {
       );
       if (!isPasswordCorrect)
         return res.status(400).json({ message: "Invalid password" });
-    }
+    } else {
+			return res.status(400).json({message: 'Already exist google log in'})
+		}
   }
   const token = jwt.sign(
     { email: existingUser.email, id: existingUser._id },

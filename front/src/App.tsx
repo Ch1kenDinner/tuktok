@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Outlet, Route, Router, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import routes from './common/routes'
@@ -8,21 +8,30 @@ import { useCustomSelector } from './redux'
 import Login from './sections/Login'
 import Navbar from './sections/Navbar'
 import CreatePost from './pages/CreatePost'
+import NotFound from './pages/NotFound'
 
 const App = () => {
 
 	const {loginFormVisibility} = useCustomSelector((state) => state.main)
 
 	return (
-    <Wrapper>
-      {loginFormVisibility && <Login />}
-      <Navbar />
-
-      <Routes>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Wrapper>
+            {loginFormVisibility && <Login />}
+            <Navbar />
+            <Outlet />
+          </Wrapper>
+        }
+      >
         <Route path={routes.index} element={<Index />} />
         <Route path={routes.createPost} element={<CreatePost />} />
-      </Routes>
-    </Wrapper>
+      </Route>
+
+      <Route path="/*" element={<NotFound />} />
+    </Routes>
   );
 }
 

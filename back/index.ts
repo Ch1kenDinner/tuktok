@@ -3,9 +3,10 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import { loginRouter } from "./routes/login";
-import { videoRouter } from "./routes/post";
+import { postRouter } from "./routes/post";
 import { topicsRouter } from "./routes/topics";
 import { userRouter } from "./routes/user";
+import { videoRouter } from "./routes/video";
 
 mongoose
   .connect(process.env.REACT_APP_MONGO_URL!)
@@ -26,6 +27,7 @@ mongoose.connection.on("connected", () => {
 });
 
 app.use("/topic", topicsRouter);
-app.use("/video", videoRouter);
+app.use("/post", postRouter);
+app.use('/video', videoRouter)
 app.use("/login", loginRouter);
 app.use("/user", userRouter);

@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit/dist";
 
 export interface IMainState {
-	loginFormVisibility: boolean
+	loginFormVisibility: boolean,
+	searchingTopics: string[]
 }
 
 const initialState: IMainState = {
-	loginFormVisibility: false
+	loginFormVisibility: false,
+	searchingTopics: []
 };
 
 export const {reducer: mainReducer, actions: mainActions} = createSlice({
