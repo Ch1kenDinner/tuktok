@@ -1,22 +1,32 @@
 import { IoAdd } from "react-icons/io5";
 import { SiAirplayvideo } from "react-icons/si";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import routes from "../common/routes";
+import browserRoutes from "../common/browserRoutes";
 import User from "../components/User";
 
 const Navbar = () => {
+  const location = useLocation();
+
+  const createPostLinkVisibility = () => {
+    if (location.pathname.includes(browserRoutes.createPost)) return false;
+
+		return true
+  };
+
   return (
     <Wrapper>
-      <LogoLink to={'/'}>
+      <LogoLink to={"/"}>
         <SiAirplayvideo />
         <p className="text">TukTok</p>
       </LogoLink>
-      <CreatePostLink to={routes.createPost}>
-        <span>Create post</span>
-        <IoAdd />
-      </CreatePostLink>
+      {createPostLinkVisibility() && (
+        <CreatePostLink to={browserRoutes.createPost}>
+          <span>Create post</span>
+          <IoAdd />
+        </CreatePostLink>
+      )}
       <User />
     </Wrapper>
   );
@@ -38,9 +48,9 @@ const Wrapper = styled.nav(() => [
 const CreatePostLink = styled(Link)(() => [
   tw`flex space-x-0.5 items-center border-2 font-thin border-pink-400 text-pink-600 rounded-sm`,
   css`
-		margin-right: auto;
-		padding: 0.1rem 0.4rem;
-		font-size: 0.5rem;
+    margin-right: auto;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.5rem;
     svg {
       margin-bottom: -0.05rem;
     }

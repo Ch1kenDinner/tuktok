@@ -1,4 +1,7 @@
 import axios, { AxiosError } from "axios";
+import { useDispatch } from "react-redux";
+import { store } from "../redux";
+import { mainActions } from "../redux/mainSlice";
 
 export const BASE_URL = "http://localhost:5000";
 

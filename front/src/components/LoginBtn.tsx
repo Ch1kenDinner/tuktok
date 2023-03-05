@@ -9,7 +9,7 @@ const LoginBtn = ({className}: DPButton) => {
 	const dispatch = useDispatch()
 
 	const handleClick = (e) => {
-		dispatch(mainActions.setField({field: 'loginFormVisibility', value: true}))
+		dispatch(mainActions.setField({loginFormVisibility: true}))
 	}
 
 	return (

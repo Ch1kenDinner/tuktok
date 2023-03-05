@@ -1,26 +1,28 @@
-import React from 'react'
-import { Outlet, Route, Router, Routes } from 'react-router-dom'
-import styled from 'styled-components'
-import tw from 'twin.macro'
-import routes from './common/routes'
-import Index from './pages/Index'
-import { useCustomSelector } from './redux'
-import Login from './sections/Login'
-import Navbar from './sections/Navbar'
-import CreatePost from './pages/CreatePost'
-import NotFound from './pages/NotFound'
+import { Outlet, Route, Routes } from "react-router-dom";
+import styled from "styled-components";
+import tw from "twin.macro";
+import routes from "./common/browserRoutes";
+import ErrorPopup from "./components/ErrorPopup";
+import CreatePost from "./pages/CreatePost";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import { useCustomSelector } from "./redux";
+import Login from "./sections/Login";
+import Navbar from "./sections/Navbar";
 
 const App = () => {
+  const { loginFormVisibility, popupMessage } = useCustomSelector(
+    (state) => state.main
+  );
 
-	const {loginFormVisibility} = useCustomSelector((state) => state.main)
-
-	return (
+  return (
     <Routes>
       <Route
         path="/"
         element={
           <Wrapper>
             {loginFormVisibility && <Login />}
+            {popupMessage && <ErrorPopup popupMessage={popupMessage} />}
             <Navbar />
             <Outlet />
           </Wrapper>
@@ -33,10 +35,8 @@ const App = () => {
       <Route path="/*" element={<NotFound />} />
     </Routes>
   );
-}
+};
 
-const Wrapper = styled.div(() => [
-	tw`h-screen`
-])
+const Wrapper = styled.div(() => [tw`h-screen`]);
 
-export default styled(App)``
+export default styled(App)``;

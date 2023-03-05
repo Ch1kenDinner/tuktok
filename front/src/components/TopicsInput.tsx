@@ -1,60 +1,90 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api, apiRoutes } from "../api";
+import { styles } from "../common/components";
 import { capitalize } from "../common/helpers";
 import { DPInput } from "../common/types";
+import { useStateReducer } from "../hooks/useCustomReducer";
 
 export interface ITopic {
   icon?: any;
   title: string;
 }
 
-export interface ITopicSelected {
-  topic: ITopic;
-  isSelected: boolean;
+interface IInitState {
+  unselectedTopics: ITopic[];
+  inputValue?: string;
+  isOpened: boolean;
+  isLoading: boolean;
 }
 
+const initState: IInitState = {
+  unselectedTopics: [],
+  isOpened: false,
+  isLoading: false,
+};
 
-interface ITopicsInput extends DPInput {
-  onChangeTopics: (topics: ITopic[]) => any;
+interface Props extends DPInput {
+  errorMessage?: string;
+  topics: ITopic[];
+  setTopics: (val: ITopic[]) => void;
 }
 
-const TopicsInput = ({ className, onChangeTopics, disabled }: ITopicsInput) => {
-  const [topics, setTopics] = useState<ITopicSelected[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [opening, setOpening] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+const TopicsInput = (props: Props) => {
+  const [state, setState] = useStateReducer(initState);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchTopics = () => {
-    setLoading(true);
+    setState({ isLoading: true });
     api
-      .get<{topics: ITopic[]}>(apiRoutes.topics)
+      .get<{ topics: ITopic[] }>(apiRoutes.topics)
       .then(({ data }) => {
-        setTopics((prev) => [
-          ...prev.filter((el) => el.isSelected),
-          ...data.topics.filter((el) => !prev.map((el) => el.topic.title).includes(el.title)).map((el) => ({topic: el, isSelected: false})),
-        ]);
+        const topicsTitle = props.topics.map((el) => el.title);
+        setState({
+          unselectedTopics: data.topics.filter(
+            (el) => !topicsTitle.includes(el.title)
+          ),
+        });
       })
       .finally(() => {
-        setLoading(false);
+        setState({ isLoading: false });
       });
   };
 
+  const toSelected = (topic: ITopic) => {
+    props.setTopics([...props.topics, topic]);
+    setState({
+      unselectedTopics: state.unselectedTopics.filter(
+        (el) => el.title != topic.title
+      ),
+    });
+  };
+
+  const toUnselected = (topic: ITopic) => {
+    setState({
+      unselectedTopics: [topic, ...state.unselectedTopics],
+    });
+    props.setTopics(props.topics.filter((el) => el.title != topic.title));
+  };
+
   const handleTagClick = (e) => {
-    if (opening) {
-      setTopics((prev) =>
-        prev
-          .map((el) => {
-            if (el.topic.title == e.target.innerText.toLowerCase()) {
-              return { ...el, isSelected: !el.isSelected };
-            }
-            return el;
-          })
-          .sort((a, b) => (a.isSelected ? -1 : 1))
+    if (state.isOpened) {
+      const unselectedTarget = state.unselectedTopics.find(
+        (el) => el.title == e.target.innerText.toLowerCase()
       );
+      if (unselectedTarget) {
+        toSelected(unselectedTarget);
+      } else {
+        const selectedTarget = props.topics.find(
+          (el) => el.title == e.target.innerText.toLowerCase()
+        );
+        if (selectedTarget) {
+          toUnselected(selectedTarget);
+        }
+      }
     }
   };
 
@@ -62,31 +92,50 @@ const TopicsInput = ({ className, onChangeTopics, disabled }: ITopicsInput) => {
     if (
       ![...wrapperRef.current!.getElementsByTagName("*")].includes(e.target)
     ) {
-      setOpening(false);
+      setState({ isOpened: false });
       window.removeEventListener("pointerdown", handleBlur);
     }
   };
 
   const handleOpen = () => {
-    if (disabled) return;
+    if (state.isLoading) return;
     window.addEventListener("pointerdown", handleBlur);
-    setOpening(true);
+    setState({ isOpened: true });
+    return () => window.removeEventListener("pointerdown", handleBlur);
   };
 
   const handleAddTag = () => {
-    if (inputValue) {
-      setTopics((prev) => [
-        {
-          topic: { title: inputValue.toLowerCase() },
-          isSelected: true,
-        },
-        ...prev.filter((el) => el.topic.title !== inputValue.toLowerCase()),
-      ]);
-      setInputValue("");
+    if (state.inputValue) {
+      const unselectedExistingTopic = state.unselectedTopics.find(
+        (el) => el.title == state.inputValue?.toLowerCase()
+      );
+      if (unselectedExistingTopic) {
+        toSelected(unselectedExistingTopic);
+        setState({ inputValue: "" });
+        return;
+      }
+
+      const selectedExistingTopic = props.topics.find(
+        (el) => el.title == state.inputValue?.toLowerCase()
+      );
+      if (selectedExistingTopic) {
+        props.setTopics([
+          { title: state.inputValue },
+          ...props.topics.filter(
+            (el) => el.title != state.inputValue?.toLowerCase()
+          ),
+        ]);
+        setState({ inputValue: "" });
+        return;
+      }
+      props.setTopics([{ title: state.inputValue }, ...props.topics]);
+      setState({ inputValue: "" });
     }
   };
 
-  const handleInputChange = (e) => setInputValue(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ inputValue: e.target.value });
+  };
 
   const handleKeyDown = (e) => {
     if (e.code == "Enter") {
@@ -96,52 +145,62 @@ const TopicsInput = ({ className, onChangeTopics, disabled }: ITopicsInput) => {
   };
 
   useEffect(() => {
-    if (opening) {
+    if (state.isOpened) {
       fetchTopics();
       inputRef.current?.focus();
-    } else {
-      setTopics((prev) => prev.filter((el) => el.isSelected));
-      onChangeTopics(topics.filter((el) => el.isSelected).map((el) => el.topic));
     }
-  }, [opening]);
+  }, [state.isOpened]);
 
   const returnTopics = () => {
-    const topicsEls = topics.map((el) => (
-      <Tag
-        isOpened={opening}
-        onClick={handleTagClick}
-        isSelected={el.isSelected}
-      >
-        {capitalize(el.topic.title)}
+    const selectedEls = props.topics.map((el) => (
+      <Tag isOpened={state.isOpened} onClick={handleTagClick} isSelected={true}>
+        {capitalize(el.title)}
       </Tag>
     ));
-    if (loading) return [...topicsEls, <p>Loading ...</p>];
-    if (topics.length === 0) return <p>Not found</p>;
-    return topicsEls;
+    const unselectedEls = state.unselectedTopics.map((el) => (
+      <Tag
+        isOpened={state.isOpened}
+        onClick={handleTagClick}
+        isSelected={false}
+      >
+        {capitalize(el.title)}
+      </Tag>
+    ));
+
+    if (state.isLoading) return [...selectedEls, <p>Loading ...</p>];
+    if (!state.isOpened)
+      return selectedEls.length ? selectedEls : <p>Select topics</p>;
+    return [...selectedEls, ...unselectedEls];
   };
 
   return (
-    <Wrapper ref={wrapperRef} className={className}>
-      {opening && (
-        <InputWrapper isOpened={opening}>
+    <Wrapper ref={wrapperRef} className={props.className}>
+      {state.isOpened && (
+        <InputWrapper isOpened={state.isOpened}>
           <Input
-            disabled={disabled}
+            disabled={props.disabled}
             ref={inputRef}
-            value={inputValue}
+            value={state.inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder="Topics"
             type={"text"}
           />
+          {props.errorMessage && state.isOpened && (
+            <ErrorMessage>{props.errorMessage}</ErrorMessage>
+          )}
           <AddTagButton
-            disabled={disabled}
+            disabled={props.disabled}
             onClick={handleAddTag}
           ></AddTagButton>
         </InputWrapper>
       )}
 
-      <TagsWrapper onClick={handleOpen} isOpened={opening}>
+      <TagsWrapper onClick={handleOpen} isOpened={state.isOpened}>
         {returnTopics()}
+        {props.errorMessage && !state.isOpened && (
+          <ErrorMessage>{props.errorMessage}</ErrorMessage>
+        )}
       </TagsWrapper>
     </Wrapper>
   );
@@ -150,20 +209,20 @@ const TopicsInput = ({ className, onChangeTopics, disabled }: ITopicsInput) => {
 const Wrapper = styled.div(() => [tw`relative`]);
 
 const InputWrapper = styled.div(({ isOpened }: { isOpened: boolean }) => [
-  tw`flex border-2 border-pink-400 rounded-sm`,
-  css`
-    padding: 0.2rem 0.4rem;
-  `,
+  tw`flex py-[0.2rem] px-[0.4rem]`,
+  styles.border,
   isOpened && tw`rounded-b-none`,
 ]);
 
 const Input = styled.input(() => [
-  tw`placeholder:(text-pink-200)`,
-  css`
-    font-size: 0.5rem;
-    flex-grow: 1;
-    outline: none;
-  `,
+  tw`text-[0.5rem] grow outline-0 placeholder:(text-pink-200)`,
+]);
+
+const ErrorMessage = styled.div(() => [
+  tw`text-red-600 ml-auto my-auto text-[0.3rem] whitespace-nowrap`,
+	css`
+		height: min-content;
+	`
 ]);
 
 const AddTagButton = styled.button(() => [

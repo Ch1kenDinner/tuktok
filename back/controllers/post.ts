@@ -82,12 +82,11 @@ export const getPostsByTopics = async (req, res) => {
 		const posts = await PostModel.find(
       { "topics.title": { $in: topics } },
       { title: 1, createdBy: 1, topics: 1, videoId: 1 }
-    ).populate('createdBy');
+    ).sort('-createdAt').populate('createdBy');
 
 		res.json({ posts });
 	} catch({message}: any) {
 		console.log(message);
 		res.status(400).json({message})
 	}
-
 };

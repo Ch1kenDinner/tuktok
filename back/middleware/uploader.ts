@@ -15,7 +15,6 @@ export const upload = () => {
 					id: videoId,
           filename: file.originalname,
           bucketName: "mainVideoBucket",
-          // aliases: [request.userId],
         });
       });
     },

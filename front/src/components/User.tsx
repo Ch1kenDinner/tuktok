@@ -19,7 +19,7 @@ const User = ({ className }: DP) => {
 
   const handleLoginClick = () => {
     dispatch(
-      mainActions.setField({ field: "loginFormVisibility", value: true })
+      mainActions.setField({ loginFormVisibility: true })
     );
   };
 

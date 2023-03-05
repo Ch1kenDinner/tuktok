@@ -5,7 +5,7 @@ import { api, apiRoutes } from "../api";
 import { DP } from "../common/types";
 import Post from "../components/Post";
 import Spinner from "../components/Spinner";
-import useCustomState from "../hooks/useCustomState";
+import { useStateReducer } from "../hooks/useCustomReducer";
 import { useCustomSelector } from "../redux";
 
 export interface IPost {
@@ -26,28 +26,27 @@ const initState: IInitState = {
 };
 
 const Posts = ({ className }: DP) => {
-  const state = useCustomState(initState);
+	const [state, setState] = useStateReducer(initState)
   const { searchingTopics } = useCustomSelector((state) => state.main);
 
   const fetchGetPosts = () => {
-    state.isLoading = true;
+		setState({isLoading: true})
     api
       .get(apiRoutes.getPosts)
       .then(({ data }) => {
-        state.posts = data.videos;
+				setState({posts: data.videos})
       })
       .finally(() => {
-        state.isLoading = false;
+				setState({isLoading: false})
       });
   };
 
   const fetchGetPostsByTopics = async () => {
-    state.isLoading = true;
+		setState({ isLoading: true });
     const { data } = await api.post(apiRoutes.getPostsByTopics, {
       topics: searchingTopics,
     });
-    state.posts = data.posts;
-    state.isLoading = false;
+		setState({ isLoading: false, posts: data.posts });
   };
 
   useEffect(() => {

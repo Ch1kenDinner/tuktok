@@ -57,7 +57,7 @@ export const postLogin = async (req, res) => {
       );
       if (!isPasswordCorrect)
         return res.status(400).json({ message: "Invalid password" });
-    } else {
+    } else if (existingUser.sub && password) {
 			return res.status(400).json({message: 'Already exist google log in'})
 		}
   }

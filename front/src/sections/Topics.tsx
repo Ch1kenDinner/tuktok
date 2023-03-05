@@ -6,7 +6,7 @@ import { api, apiRoutes } from "../api";
 import { capitalize } from "../common/helpers";
 import { DP } from "../common/types";
 import { ITopic } from "../components/TopicsInput";
-import useCustomState from "../hooks/useCustomState";
+import { useStateReducer } from "../hooks/useCustomReducer";
 import { useCustomSelector } from "../redux";
 import { mainActions } from "../redux/mainSlice";
 
@@ -16,55 +16,57 @@ interface ITopicSelected {
 }
 
 interface IInitState {
-  loading: boolean;
-  data: ITopicSelected[];
+  isLoading: boolean;
+  topics: ITopicSelected[];
 }
 
 const initState: IInitState = {
-  loading: false,
-  data: [],
+  isLoading: false,
+  topics: [],
 };
 
 const Topics = ({ className }: DP) => {
-  const state = useCustomState(initState);
+  const [state, setState] = useStateReducer(initState);
   const dispatch = useDispatch();
   const { searchingTopics } = useCustomSelector((state) => state.main);
 
   const fetchTopics = async () => {
-    state.loading = true;
+    setState({ isLoading: true });
     api
       .get<{ topics: ITopic[] }>(apiRoutes.topics)
       .then(({ data }) => {
-        state.data = data.topics.map((el) => ({
-          topic: el,
-          isSelected: false,
-        }));
+        setState({
+          topics: data.topics.map((el) => ({
+            topic: el,
+            isSelected: false,
+          })),
+        });
       })
-      .finally(() => (state.loading = false));
+      .finally(() => {
+        setState({ isLoading: false });
+      });
   };
 
   const handleItemClick = (e) => {
     if (e.target.innerText) {
-      // const topics = Array.from(
-      //   new Set([...searchingTopics, e.target.innerText.toLowerCase()])
-      // );
-			const currentTopic = e.target.innerText.toLowerCase() 
-			let topics: string[];
-			if (searchingTopics.includes(currentTopic)) {
-				topics = searchingTopics.filter((el) => el !== currentTopic)
-			} else {
-				topics = [...searchingTopics, currentTopic]
-			}
-      state.data = state.data.map((el) => {
-        if (topics.includes(el.topic.title)) {
-          return { topic: el.topic, isSelected: true };
-        }
-        return { topic: el.topic, isSelected: false };
+      const currentTopic = e.target.innerText.toLowerCase();
+      let topics: string[];
+      if (searchingTopics.includes(currentTopic)) {
+        topics = searchingTopics.filter((el) => el !== currentTopic);
+      } else {
+        topics = [...searchingTopics, currentTopic];
+      }
+      setState({
+        topics: state.topics.map((el) => {
+          if (topics.includes(el.topic.title)) {
+            return { topic: el.topic, isSelected: true };
+          }
+          return { topic: el.topic, isSelected: false };
+        }),
       });
       dispatch(
         mainActions.setField({
-          field: 'searchingTopics',
-          value: topics,
+          searchingTopics: topics,
         })
       );
     }
@@ -75,11 +77,11 @@ const Topics = ({ className }: DP) => {
   }, []);
 
   const returnList = () => {
-    if (state.loading) return <h3>Loading</h3>;
-    if (state.data.length === 0) return <h3>Not Found</h3>;
+    if (state.isLoading) return <h3>Loading</h3>;
+    if (state.topics.length === 0) return <h3>Not Found</h3>;
     return (
       <List>
-        {state.data.map((el) => (
+        {state.topics.map((el) => (
           <Item isSelected={el.isSelected} onClick={handleItemClick}>
             {capitalize(el.topic.title)}
           </Item>

@@ -2,8 +2,8 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 
 export const styles = {
-  border: tw`text-pink-600 border-2 border-pink-400 rounded-sm`,
-	onDisabled: tw`disabled:(bg-black)`
+  border: tw`border-2 border-pink-400 rounded-sm`,
+	isDisabled: tw`text-pink-200 border-pink-200`
 };
 
 export const Input = styled.input(() => [
