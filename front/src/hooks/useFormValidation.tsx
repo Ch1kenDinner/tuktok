@@ -36,11 +36,6 @@ export default <F extends Record<string, any>>(
 	}
 
 	const isValid = () => {
-		// if (!Object.values(errors).length) {
-		// 	validate()
-		// 	return false;
-		// }
-
 		return !!!Object.values(errors).find((el) => el && el.length)
 	}
 

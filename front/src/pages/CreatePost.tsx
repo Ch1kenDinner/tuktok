@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -79,12 +79,14 @@ const CreatePost = ({ className }: DP) => {
         apiRoutes.postPost,
         { title, video, topics },
         { headers: { "Content-Type": "multipart/form-data" } }
-      )
-      .then((response: AxiosResponse) => {
-        if (response.status == 200) {
+      ).catch((err) => {
+				dispatch(mainActions.setField({popupMessage: {message: err.response?.data.message, type: 'error'}}))
+			})
+      .then((response) => {
+        if (response?.status == 200) {
           dispatch(
             mainActions.setField({
-              popupMessage: { message: response.data.message, type: "success" },
+              popupMessage: { message: response.data?.message, type: "success" },
             })
           );
         }

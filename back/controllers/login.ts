@@ -1,7 +1,6 @@
 import bcryptjs from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
-import { IImageSchema } from "../archive/image";
 import { IUserSchema, UserModel } from "../models/user";
 
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
@@ -33,6 +32,7 @@ export const postLogin = async (req, res) => {
     user = {
       email: googleData.email,
       sub: googleData.sub,
+			picture: googleData.picture
     };
   } else if (email && password) {
     user = {

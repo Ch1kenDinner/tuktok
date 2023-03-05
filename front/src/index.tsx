@@ -12,10 +12,6 @@ const GlobalStyles = createGlobalStyle`
 		font-size: clamp(16px, calc(10px + 2vw), 40px);
 	}
 
-	input:disabled {
-		background-color: none;
-	}
-
 	:root {
 		--gap-x-global: max(2.5%, 1vw);
 		--hr-border: 1px solid #b1b1b177;

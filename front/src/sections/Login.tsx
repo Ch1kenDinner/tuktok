@@ -75,7 +75,7 @@ const Login = ({ className }: DP) => {
       .catch((err) => {
         dispatch(
           mainActions.setField({
-            popupMessage: err.response.data.message,
+            popupMessage: { message: err.response.data.message, type: 'error' },
           })
         );
       })

@@ -3,7 +3,7 @@ import { model, Schema, Types } from "mongoose";
 export interface IUserSchema {
   email: string;
   password?: string;
-  picture?: Types.ObjectId;
+  picture?: string;
   sub?: string;
 }
 
@@ -22,11 +22,6 @@ export const userSchema = new Schema<IUserSchema>({
     type: String,
     default: defaultAvatarBase64,
   },
-  // picture: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Image",
-  //   default: new Types.ObjectId("63fdb4e8b3fca30d9e118349"),
-  // },
   sub: {
     type: String,
   },
