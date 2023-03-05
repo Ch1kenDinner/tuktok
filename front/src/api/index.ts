@@ -3,7 +3,8 @@ import { useDispatch } from "react-redux";
 import { store } from "../redux";
 import { mainActions } from "../redux/mainSlice";
 
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = "https://tuktok-server.onrender.com";
+// export const BASE_URL = "http://localhost:5000";
 
 export const apiRoutes = {
   topics: "/topic/all",

@@ -62,7 +62,7 @@ const Posts = ({ className }: DP) => {
   }, [searchingTopics]);
 
   if (state.isLoading) return <Spinner />;
-  if (!state.posts || !state.posts.length) return <>Not found</>;
+  if (!state.posts || !state.posts.length) return <NotFound>Not found</NotFound>;
 
   return (
     <Wrapper className={className}>
@@ -89,5 +89,9 @@ const Wrapper = styled.div(() => [
     }
   `,
 ]);
+
+const NotFound = styled.p(() => [
+	tw`text-[0.5rem] italic opacity-30`
+])
 
 export default styled(Posts)``;
