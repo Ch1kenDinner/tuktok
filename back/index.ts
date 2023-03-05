@@ -26,6 +26,10 @@ mongoose.connection.on("connected", () => {
   });
 });
 
+app.get('/', (req, res) => {
+	res.json({message: 'hi'})
+})
+
 app.use("/topic", topicsRouter);
 app.use("/post", postRouter);
 app.use('/video', videoRouter)
