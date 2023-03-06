@@ -17,7 +17,7 @@ const Post = ({post, className}: PostProps) => {
       {post.createdBy.picture && <AuthorPicture><img src={post.createdBy.picture} alt={'user_picture'}></img></AuthorPicture>}
       <Topics>{post.topics.map((el) => <Topic>{el.title}</Topic>)}</Topics>
 			<Video controls>
-        <source src={BASE_URL + apiRoutes.getVideo(post.videoId)} />
+        <source src={BASE_URL + apiRoutes.getVideo(post.videoId)} type='video/mp4' />
       </Video>
       <AuthorEmail>{post.createdBy.email}</AuthorEmail>
     </Wrapper>

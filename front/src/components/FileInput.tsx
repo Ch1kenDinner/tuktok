@@ -32,6 +32,8 @@ const FileInput = (props: Props) => {
 		if (!e.target.files) return;
 		const file = e.target.files[0]
 
+		console.log('file', file)
+
 		if (!file.type.includes('video/')) return;
     props.setFile(file);
   };

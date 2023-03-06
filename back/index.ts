@@ -17,7 +17,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.json({ limit: "100mb" }));
+app.use(express.json({ limit: "30mb" }));
 
 export let mainVideoBucket;
 mongoose.connection.on("connected", () => {

@@ -65,6 +65,7 @@ const Login = ({ className }: DP) => {
   };
 
   const handleFetchResponse = (response) => {
+		console.log('response', response)
     setState({ isLoading: true });
     api
       .post("/login", response)
