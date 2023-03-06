@@ -10,14 +10,14 @@ import { videoRouter } from "./routes/video";
 
 mongoose
   .connect(process.env.REACT_APP_MONGO_URL!)
+  .catch((err) => console.log("CONNECTION ERROR", err))
   .then(() => app.listen(5000))
-  .catch((err) => console.log("CONNECTION ERROR", err));
 
 const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json({ limit: "30mb" }));
+// app.use(express.json({ limit: "100mb" }));
 
 export let mainVideoBucket;
 mongoose.connection.on("connected", () => {

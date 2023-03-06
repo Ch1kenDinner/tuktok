@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 import { mainVideoBucket } from "..";
 
+const CHUNK_SIZE = 2e6;
+// const CHUNK_SIZE = 261120;
 
 export const getVideo = async (req, res) => {
   const { videoId } = req.params;
@@ -10,22 +12,31 @@ export const getVideo = async (req, res) => {
     .toArray();
   if (!video) return res.status(404).json({ message: "Video not found!" });
 
-  const startRange = Number(req.headers.range.replace(/\D/g, ""));
-  const endVideo = video.length - 1;
-  const lengthVideo = endVideo - startRange + 1;
+	const {range} = req.headers
+	if (!range) res.status(400).json({message: 'Range required'})
 
-  const headers = {
-    "Content-Type": video.contentType,
-    "Accept-Ranges": "bytes",
-    "Content-Length": lengthVideo,
-    "Content-Range": `bytes ${startRange}-${endVideo}/${video.length}`,
-  };
+	const parts = req.headers.range.replace(/bytes=/, "").split("-");
 
-  res.writeHead(206, headers);
+	const startRange = parseInt(parts[0], 10);
+	const endRange = Math.min(startRange + CHUNK_SIZE, video.length - 1)
 
-  const fileStream = mainVideoBucket.openDownloadStream(
+	const lengthRange = endRange - startRange
+
+	const headers = {
+		"Accept-Ranges": "bytes",
+		"Content-Range": `bytes ${startRange}-${endRange}/${video.length}`,
+		"Content-Length": lengthRange,
+		"Content-Type": video.contentType,
+	};
+
+	res.writeHead(206, headers);
+
+	const fileStream = await mainVideoBucket.openDownloadStream(
     new Types.ObjectId(videoId),
-    { start: startRange, end: Math.min(startRange + 1000000, endVideo) }
+    {
+      start: startRange,
+      end: Math.min(startRange + CHUNK_SIZE, video.length),
+    }
   );
-  fileStream.pipe(res);
+	await fileStream.pipe(res);
 };
