@@ -5,16 +5,18 @@ import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api, apiRoutes } from "../api";
-import customEvents from "../common/customEvents";
 import { convertToBase64 } from "../common/helpers";
 import { DP } from "../common/types";
 import { ProfileContext } from "../context/profileContext";
 import { mainActions } from "../redux/mainSlice";
 
 const User = ({ className }: DP) => {
+  const [user, setUser] = useState<{ picture: string; email: string }>();
+
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
+	// const profile = localStorage.getItem("profile");
 	const profile = useContext(ProfileContext)
 
   const handleLoginClick = () => {
@@ -32,18 +34,26 @@ const User = ({ className }: DP) => {
     const file = e.target.files[0];
     const {result: base64}: any = await convertToBase64(file);
     api.patch(apiRoutes.uploadAvatar, { base64 }).then(({ data }) => {
+      // const profile = localStorage.getItem("profile");
       if (profile) {
+        // const { token } = JSON.parse(profile);
         localStorage.setItem(
           "profile",
-          JSON.stringify({ ...profile, user: data.user })
+          JSON.stringify({ token: profile.token, user: data.user })
         );
-				window.dispatchEvent(new Event(customEvents.localStorageChange))
+				setUser(data.user)
       }
     });
   };
 
+  // useEffect(() => {
+  //   if (profile) {
+  //     setUser(JSON.parse(profile).user);
+  //   }
+  // }, [profile]);
+
   const returnUser = () => {
-    if (!profile || !profile.user) {
+    if (!user) {
       return (
         <LoginButton onClick={handleLoginClick}>
           <p>Log In</p>
@@ -56,9 +66,9 @@ const User = ({ className }: DP) => {
         <PictureLabel>
           <MdOutlineEdit />
           <input onChange={handleInputChange} accept={'image/png, image/jpeg'} type="file" ref={inputRef} />
-          <Image src={profile.user.picture} />
+          <Image src={user.picture} />
         </PictureLabel>
-        <Username>{profile.user.email}</Username>
+        <Username>{user.email}</Username>
         <LogoutButton onClick={handleLogout}>
           <CiLogout />
         </LogoutButton>

@@ -3,16 +3,20 @@ import { useDispatch } from "react-redux";
 import { store } from "../redux";
 import { mainActions } from "../redux/mainSlice";
 
-export const BASE_URL = "https://tuktok-server.onrender.com";
-// export const BASE_URL = "http://localhost:5000";
+// export const BASE_URL = "https://tuktok-server.onrender.com";
+export const BASE_URL = "http://localhost:5000";
 
 export const apiRoutes = {
   topics: "/topic/all",
   getPosts: "/post/all",
-	getPostsByTopics: '/post/byTopics',
+  getPostsByTopics: "/post/byTopics",
   postPost: "/post/upload",
   getVideo: (videoId: string) => `/video/${videoId}`,
   uploadAvatar: "/user/upload/avatar",
+  getComments: (postId: string) => `/post/${postId}/comments`,
+  postComment: (postId: string) => `/post/${postId}/comment`,
+  deletePost: (postId: string) => `post/${postId}`,
+	postLike: (type: 'like' | 'dislike', commentId: string) => `/comment/${commentId}/${type}`
 };
 
 export const api = axios.create({ baseURL: BASE_URL });

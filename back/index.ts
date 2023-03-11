@@ -2,6 +2,7 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
+import { commentRouter } from "./routes/comment";
 import { loginRouter } from "./routes/login";
 import { postRouter } from "./routes/post";
 import { topicsRouter } from "./routes/topics";
@@ -35,3 +36,4 @@ app.use("/post", postRouter);
 app.use('/video', videoRouter)
 app.use("/login", loginRouter);
 app.use("/user", userRouter);
+app.use('/comment', commentRouter)

@@ -2,5 +2,5 @@
 export default {
 	index: '/',
 	createPost: '/create-post',
-	notFound: '/*'
+	notFound: '/*',
 }

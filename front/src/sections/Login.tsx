@@ -4,13 +4,14 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api } from "../api";
 import { styles } from "../common/components";
+import customEvents from "../common/customEvents";
 import { DP } from "../common/types";
 import Input from "../components/Input";
-import { useStateReducer } from "../hooks/useCustomReducer";
 import useFormValidation, {
   defaultValidateRules,
   IRules,
 } from "../hooks/useFormValidation";
+import { useStateReducer } from "../hooks/useStateReducer";
 import { mainActions } from "../redux/mainSlice";
 
 interface IInitState {
@@ -65,18 +66,18 @@ const Login = ({ className }: DP) => {
   };
 
   const handleFetchResponse = (response) => {
-		console.log('response', response)
     setState({ isLoading: true });
     api
       .post("/login", response)
       .then(({ data }) => {
         localStorage.setItem("profile", JSON.stringify(data));
+        window.dispatchEvent(new Event(customEvents.localStorageChange));
         dispatch(mainActions.setField({ loginFormVisibility: false }));
       })
       .catch((err) => {
         dispatch(
           mainActions.setField({
-            popupMessage: { message: err.response.data.message, type: 'error' },
+            popupMessage: { message: err.response.data.message, type: "error" },
           })
         );
       })

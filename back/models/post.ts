@@ -8,6 +8,7 @@ export interface IPostSchema {
   createdBy?: Types.ObjectId | IUserSchema;
   createdAt: Date;
   updatedAt: Date;
+	comments: Types.ObjectId[]
   topics: ITopicSchema[];
 }
 
@@ -17,12 +18,12 @@ const postSchema = new Schema<IPostSchema>({
     required: true,
   },
   videoId: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "mainVideoBucket",
     required: true,
   },
   createdBy: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "user",
     required: true,
   },
@@ -34,6 +35,10 @@ const postSchema = new Schema<IPostSchema>({
     type: Date,
     default: Date.now,
   },
+	comments: {
+		type: [Schema.Types.ObjectId],
+		ref: 'comment'
+	},
   topics: {
     type: [topicSchema],
   },

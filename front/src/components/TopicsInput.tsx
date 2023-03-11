@@ -5,7 +5,7 @@ import { api, apiRoutes } from "../api";
 import { styles } from "../common/components";
 import { capitalize } from "../common/helpers";
 import { DPInput } from "../common/types";
-import { useStateReducer } from "../hooks/useCustomReducer";
+import { useStateReducer } from "../hooks/useStateReducer";
 
 export interface ITopic {
   icon?: any;
@@ -220,9 +220,9 @@ const Input = styled.input(() => [
 
 const ErrorMessage = styled.div(() => [
   tw`text-red-600 ml-auto my-auto text-[0.3rem] whitespace-nowrap`,
-	css`
-		height: min-content;
-	`
+  css`
+    height: min-content;
+  `,
 ]);
 
 const AddTagButton = styled.button(() => [

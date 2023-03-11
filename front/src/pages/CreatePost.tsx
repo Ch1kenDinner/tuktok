@@ -1,4 +1,3 @@
-import { AxiosError, AxiosResponse } from "axios";
 import { useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -10,11 +9,11 @@ import { DP } from "../common/types";
 import FileInput from "../components/FileInput";
 import Input from "../components/Input";
 import TopicsInput, { ITopic } from "../components/TopicsInput";
-import { useStateReducer } from "../hooks/useCustomReducer";
 import useFormValidation, {
   defaultValidateRules,
   IRules,
 } from "../hooks/useFormValidation";
+import { useStateReducer } from "../hooks/useStateReducer";
 import { mainActions } from "../redux/mainSlice";
 
 interface IInitState {
@@ -79,14 +78,26 @@ const CreatePost = ({ className }: DP) => {
         apiRoutes.postPost,
         { title, video, topics },
         { headers: { "Content-Type": "multipart/form-data" } }
-      ).catch((err) => {
-				dispatch(mainActions.setField({popupMessage: {message: err.response?.data.message, type: 'error'}}))
-			})
-      .then((response) => {
+      )
+      .catch((err) => {
+				console.log('err', err)
+        dispatch(
+          mainActions.setField({
+            popupMessage: {
+              message: err.response?.data.message,
+              type: "error",
+            },
+          })
+        );
+      })
+      .then((response: any) => {
         if (response?.status == 200) {
           dispatch(
             mainActions.setField({
-              popupMessage: { message: response.data?.message, type: "success" },
+              popupMessage: {
+                message: response.data?.message,
+                type: "success",
+              },
             })
           );
         }

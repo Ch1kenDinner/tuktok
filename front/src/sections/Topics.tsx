@@ -6,7 +6,7 @@ import { api, apiRoutes } from "../api";
 import { capitalize } from "../common/helpers";
 import { DP } from "../common/types";
 import { ITopic } from "../components/TopicsInput";
-import { useStateReducer } from "../hooks/useCustomReducer";
+import { useStateReducer } from "../hooks/useStateReducer";
 import { useCustomSelector } from "../redux";
 import { mainActions } from "../redux/mainSlice";
 
