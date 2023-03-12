@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api, apiRoutes } from "../api";
 import routes from "../common/browserRoutes";
-import { styles } from "../common/components";
+import styles from "../common/styles";
 import { DP } from "../common/types";
 import FileInput from "../components/FileInput";
 import Input from "../components/Input";

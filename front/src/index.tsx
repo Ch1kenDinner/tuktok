@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
@@ -24,11 +25,13 @@ export const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <DefaultStyles />
-      <GlobalStyles />
-      <App />
-    </BrowserRouter>
-  </Provider>
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <DefaultStyles />
+        <GlobalStyles />
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>
 );

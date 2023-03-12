@@ -38,22 +38,17 @@ const Comment = (props: Props) => {
     });
   };
 
-  const userLikeType = useMemo(
-    () => props.comment.reactions.find((el) => el.userId == profile?.user?._id),
-    [props.comment.reactions]
+  const userLikeType = props.comment.reactions.find(
+    (el) => el.userId == profile?.user?._id
   );
 
-  const commentRating = useMemo(
-    () =>
-      props.comment.reactions.reduce((prev, curr) => {
-        if (curr.reaction === "like") {
-          return prev + 1;
-        } else if (curr.reaction === "dislike") {
-          return prev - 1;
-        }
-      }, 0),
-    [props.comment.reactions]
-  );
+  const commentRating = props.comment.reactions.reduce((prev, curr) => {
+    if (curr.reaction === "like") {
+      return prev + 1;
+    } else if (curr.reaction === "dislike") {
+      return prev - 1;
+    }
+  }, 0);
 
   return (
     <Wrapper className={props.className}>
@@ -90,7 +85,7 @@ const Wrapper = styled.div(() => [
   css`
     display: grid;
     grid-template:
-      "userPic userName . likes" 1rem
+      "userPic userName . likes" 0.8rem
       ". text date likes"
       / auto 1fr auto auto;
 

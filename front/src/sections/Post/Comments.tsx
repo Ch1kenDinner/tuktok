@@ -32,6 +32,6 @@ const Comments = (props: Props) => {
   );
 };
 
-const Wrapper = styled.div(() => [tw`my-2 space-y-1`]);
+const Wrapper = styled.div(() => [tw`my-2 space-y-3`]);
 
 export default styled(Comments)``;

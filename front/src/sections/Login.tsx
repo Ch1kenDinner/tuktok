@@ -3,8 +3,8 @@ import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api } from "../api";
-import { styles } from "../common/components";
 import customEvents from "../common/customEvents";
+import styles from "../common/styles";
 import { DP } from "../common/types";
 import Input from "../components/Input";
 import useFormValidation, {
@@ -151,7 +151,7 @@ const Form = styled.form(() => [
 
 const SubmitButton = styled.button(() => [
   tw`w-full text-pink-800 uppercase`,
-  styles.border,
+  styles.ring,
   css`
     font-weight: 500;
     font-size: 0.5rem;

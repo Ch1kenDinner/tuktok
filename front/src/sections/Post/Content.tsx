@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import { useContext } from "react";
+import { FaRegComment } from "react-icons/fa";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { PostContext } from ".";
 import { apiRoutes, BASE_URL } from "../../api";
+import styles from "../../common/styles";
 import { DP } from "../../common/types";
 import DeleteButton from "../../components/DeleteButton";
 import { ProfileContext } from "../../context/profileContext";
@@ -19,14 +21,14 @@ const Content = (props: Props) => {
   const [state, setState] = useStateReducer({
     isLoading: false,
   });
-	const {mainState, setMainState} = useContext(PostContext)
+  const { mainState, setMainState } = useContext(PostContext);
   const profile = useContext(ProfileContext);
 
   const handleDeletePost = () => {
     setState({ isLoading: true });
     fetchDeletePost(props.post._id).then(() => {
       setState({ isLoading: false });
-			setMainState({isDeleted: true})
+      setMainState({ isDeleted: true });
     });
   };
 
@@ -53,9 +55,22 @@ const Content = (props: Props) => {
       <CreatedAt>
         Uploaded: {dayjs(props.post.createdAt).format("DD.MM.YYYY")}
       </CreatedAt>
-      {profile?.user?._id == props.post.createdBy._id && (
-        <DeleteButton disabled={state.isLoading} onConfirm={handleDeletePost} />
-      )}
+      <ButtonsWrapper>
+        {profile?.user?._id == props.post.createdBy._id && (
+          <DeleteButton
+            disabled={state.isLoading}
+            onConfirm={handleDeletePost}
+          />
+        )}
+        <CommentButton>
+          <FaRegComment />
+          <span>
+            {mainState.comments.length == 0
+              ? "Write first comment!"
+              : mainState.comments.length}
+          </span>
+        </CommentButton>
+      </ButtonsWrapper>
     </Wrapper>
   );
 };
@@ -64,16 +79,16 @@ const Wrapper = styled.div(() => [
   tw`flex flex-col w-[16rem]`,
   css`
     display: grid;
-    gap: 0.4rem;
+    gap: var(--gap);
     grid-template:
       "picture email email"
       "picture title title"
       ". topics cAt"
       ". video video"
-      ". deleteBtn ."
-      / 1.5rem 1fr;
+      ". btnsWrapper btnsWrapper"
+      / var(--user-picture-column-width) 1fr;
 
-    &:hover ${DeleteButton} {
+    &:hover ${DeleteButton}, &:hover ${CommentButton} {
       opacity: 1;
     }
 
@@ -106,11 +121,35 @@ const Wrapper = styled.div(() => [
     ${CreatedAt} {
       grid-area: cAt;
     }
-
-    ${DeleteButton} {
-      grid-area: deleteBtn;
-      margin-left: 0.2rem;
+    ${ButtonsWrapper} {
+      grid-area: btnsWrapper;
     }
+  `,
+]);
+
+const ButtonsWrapper = styled.div(() => [
+  tw`flex items-center px-1 h-6 relative bottom-[var(--gap)] mb-[-var(--gap)]`,
+  // styles.border,
+	css`
+    border-style: none solid solid solid;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    & > * {
+      ${tw`text-[0.5rem] text-pink-400`}
+    }
+  `,
+]);
+
+const CommentButton = styled.button(() => [
+  tw`flex px-1 h-3 space-x-0.5 ml-auto opacity-30 items-center `,
+  css`
+    &:hover {
+      ${styles.ring}
+    }
+		& span {
+			font-size: 0.4rem;
+		}
   `,
 ]);
 

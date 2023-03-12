@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { styles } from "../common/components";
+import styles from "../common/styles";
 import { DP } from "../common/types";
 import { mainActions } from "../redux/mainSlice";
 
@@ -24,7 +24,7 @@ const ErrorPopup = (props: Props) => {
     dispatch(mainActions.setField({ popupMessage: undefined }));
   };
 
-	console.log('props.popupMessage', props.popupMessage)
+  console.log("props.popupMessage", props.popupMessage);
 
   return (
     <AnimWrapper
@@ -44,7 +44,7 @@ const ErrorPopup = (props: Props) => {
 };
 
 const AnimWrapper = styled(motion.div)(() => [
-  styles.border,
+  styles.ring,
   css`
     --left-spacing: 0.5rem;
     --left: calc(-100% + var(--left-spacing));

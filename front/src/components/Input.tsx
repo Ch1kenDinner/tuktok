@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { styles } from "../common/components";
+import styles from "../common/styles";
 import { DPInput } from "../common/types";
 
 interface Props extends DPInput {

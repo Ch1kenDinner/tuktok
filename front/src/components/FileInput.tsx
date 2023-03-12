@@ -2,7 +2,7 @@ import { DragEvent, useEffect, useRef } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { styles } from "../common/components";
+import styles from "../common/styles";
 import { DPInput } from "../common/types";
 import { useStateReducer } from "../hooks/useStateReducer";
 
@@ -107,7 +107,7 @@ const FileInput = (props: Props) => {
 
 const Label = styled.label(
   ({ disabled, isDragged }: { disabled?: boolean; isDragged: boolean }) => [
-    styles.border,
+    styles.ring,
     tw`flex flex-col items-center justify-center w-full space-x-1 text-pink-600 aspect-video`,
     css`
       padding: 0.2rem 0.5rem;

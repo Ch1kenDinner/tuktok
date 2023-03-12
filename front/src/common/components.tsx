@@ -1,14 +1,10 @@
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-
-export const styles = {
-  border: tw`border-2 border-pink-400 rounded-sm`,
-	isDisabled: tw`text-pink-200 border-pink-200`
-};
+import styles from "./styles";
 
 export const Input = styled.input(() => [
   tw`w-full placeholder:(text-pink-200)`,
-  styles.border,
+  styles.ring,
   css`
     outline: none;
     font-size: 0.5rem;

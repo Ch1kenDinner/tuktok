@@ -1,19 +1,18 @@
 import { createContext, Dispatch } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { DP } from "../../common/types";
-import { StateContextProvider } from "../../context/stateContext";
 import { useStateReducer } from "../../hooks/useStateReducer";
-import { fetchGetComments } from "./api";
 import CommentForm from "./CommentForm";
 import PostComments from "./Comments";
 import PostContent from "./Content";
 import { IComment, IPost } from "./types";
 
 interface IInitState {
-	post: IPost,
-  isDeleted: boolean,
-	comments: IComment[]
+  post: IPost;
+  isDeleted: boolean;
+  comments: IComment[];
+	isCommentsHidden: boolean
 }
 
 export const PostContext = createContext<{
@@ -28,29 +27,62 @@ interface PostProps extends DP {
 const Post = (props: PostProps) => {
   const [mainState, setMainState] = useStateReducer<IInitState>({
     post: props.post,
-		isDeleted: false,
-		comments: []
+    isDeleted: false,
+    comments: [],
+		isCommentsHidden: true
   });
 
   if (mainState.isDeleted) return <></>;
 
   return (
     <Wrapper className={props.className}>
-      <PostContext.Provider
-        value={{mainState, setMainState}}
-      >
+      <PostContext.Provider value={{ mainState, setMainState }}>
         <PostContent post={props.post} />
         <CommentsWrapper>
-          <PostComments postId={props.post._id} />
           <CommentForm postId={props.post._id} />
+          <Hr />
+          <PostComments postId={props.post._id} />
         </CommentsWrapper>
       </PostContext.Provider>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div(() => [tw``]);
+const Wrapper = styled.div(() => [
+  css`
+    --user-picture-column-width: 1.5rem;
+    --gap: 0.4rem;
+  `,
+]);
 
-const CommentsWrapper = styled.div(() => [tw``]);
+const Hr = styled.div(() => [
+  css`
+    margin: 0.5rem 0;
+    flex-grow: 1;
+    height: 0.03rem;
+    border-radius: 50%;
+    overflow: hidden;
+    ${tw`bg-pink-200`}
+  `,
+]);
+
+const CommentsWrapper = styled.div(() => [
+  tw`ml-[calc(var(--user-picture-column-width) + var(--gap))]`,
+  // css`
+  // 	padding-bottom: 0.5rem;
+  //   position: relative;
+  //   &:after {
+  //     content: "";
+  //     position: absolute;
+  //     bottom: 0;
+  //     left: 0;
+  //     right: 0;
+  //     height: 0.05rem;
+  //     border-radius: 50%;
+  //     overflow: hidden;
+  //     background: linear-gradient(to left, pink, #ff516e, pink);
+  //   }
+  // `,
+]);
 
 export default styled(Post)``;

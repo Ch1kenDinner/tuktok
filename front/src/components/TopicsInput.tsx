@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api, apiRoutes } from "../api";
-import { styles } from "../common/components";
 import { capitalize } from "../common/helpers";
+import styles from "../common/styles";
 import { DPInput } from "../common/types";
 import { useStateReducer } from "../hooks/useStateReducer";
 
@@ -210,7 +210,7 @@ const Wrapper = styled.div(() => [tw`relative`]);
 
 const InputWrapper = styled.div(({ isOpened }: { isOpened: boolean }) => [
   tw`flex py-[0.2rem] px-[0.4rem]`,
-  styles.border,
+  styles.ring,
   isOpened && tw`rounded-b-none`,
 ]);
 

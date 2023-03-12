@@ -2,12 +2,9 @@ import { useEffect, useRef } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
+import styles from "../common/styles";
 import { DPButton } from "../common/types";
 import { useStateReducer } from "../hooks/useStateReducer";
-
-const styles = {
-  border: tw`ring-[0.05rem] ring-gray-200 rounded-3xl`,
-};
 
 interface Props extends DPButton {
   onConfirm: () => void;
@@ -71,21 +68,21 @@ const DeleteButton = (props: Props) => {
 };
 
 const Wrapper = styled.div(({ isOpen }: { isOpen: boolean }) => [
-  tw`text-[0.4rem] opacity-30 mr-auto`,
+  tw`text-[0.4rem] opacity-30`,
   isOpen && tw`opacity-100`,
   !isOpen &&
     css`
       ${Button}:hover {
-        ${styles.border}
+        ${styles.ring}
       }
     `,
 ]);
 
-const Button = styled.button(() => [tw`px-1 h-3 text-[0.5rem]`]);
+const Button = styled.button(() => [tw`text-inherit px-1 h-3 text-[0.5rem]`]);
 
 const ConfirmWrapper = styled.div(() => [
   tw`flex items-center space-x-[0.2rem] px-1 h-3 `,
-  styles.border,
+  styles.ring,
 ]);
 
 const ConfirmMessage = styled.p(() => [tw``]);
