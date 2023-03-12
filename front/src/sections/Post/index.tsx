@@ -68,21 +68,6 @@ const Hr = styled.div(() => [
 
 const CommentsWrapper = styled.div(() => [
   tw`ml-[calc(var(--user-picture-column-width) + var(--gap))]`,
-  // css`
-  // 	padding-bottom: 0.5rem;
-  //   position: relative;
-  //   &:after {
-  //     content: "";
-  //     position: absolute;
-  //     bottom: 0;
-  //     left: 0;
-  //     right: 0;
-  //     height: 0.05rem;
-  //     border-radius: 50%;
-  //     overflow: hidden;
-  //     background: linear-gradient(to left, pink, #ff516e, pink);
-  //   }
-  // `,
 ]);
 
 export default styled(Post)``;

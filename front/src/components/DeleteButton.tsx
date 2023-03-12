@@ -68,12 +68,14 @@ const DeleteButton = (props: Props) => {
 };
 
 const Wrapper = styled.div(({ isOpen }: { isOpen: boolean }) => [
-  tw`text-[0.4rem] opacity-30`,
+  tw`text-[0.4rem]`,
   isOpen && tw`opacity-100`,
   !isOpen &&
     css`
-      ${Button}:hover {
-        ${styles.ring}
+      @media (hover: hover) {
+        ${Button}:hover {
+          ${styles.ring}
+        }
       }
     `,
 ]);

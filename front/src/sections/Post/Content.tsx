@@ -32,6 +32,10 @@ const Content = (props: Props) => {
     });
   };
 
+	const handleOpenComments = () => {
+		setMainState({isCommentsHidden: false})
+	}
+
   return (
     <Wrapper className={props.className}>
       <Title>{props.post.title}</Title>
@@ -62,7 +66,7 @@ const Content = (props: Props) => {
             onConfirm={handleDeletePost}
           />
         )}
-        <CommentButton>
+        <CommentButton onClick={handleOpenComments}>
           <FaRegComment />
           <span>
             {mainState.comments.length == 0
@@ -88,8 +92,16 @@ const Wrapper = styled.div(() => [
       ". btnsWrapper btnsWrapper"
       / var(--user-picture-column-width) 1fr;
 
-    &:hover ${DeleteButton}, &:hover ${CommentButton} {
-      opacity: 1;
+    @media (hover: hover) {
+      ${CommentButton}, ${DeleteButton} {
+        opacity: 0.3;
+      }
+      &:hover ${DeleteButton}, &:hover ${CommentButton} {
+        opacity: 1;
+      }
+      ${CommentButton}:hover {
+				${styles.ring}
+			}
     }
 
     ${Title} {
@@ -103,17 +115,6 @@ const Wrapper = styled.div(() => [
     }
     ${AuthorPicture} {
       grid-area: picture;
-      margin: auto 0;
-      aspect-ratio: 1/1;
-      border-radius: 50%;
-      overflow: hidden;
-      ${tw`flex items-center h-auto w-full justify-center`}
-
-      img {
-        width: auto;
-        object-fit: cover;
-        height: 100%;
-      }
     }
     ${AuthorEmail} {
       grid-area: email;
@@ -129,7 +130,6 @@ const Wrapper = styled.div(() => [
 
 const ButtonsWrapper = styled.div(() => [
   tw`flex items-center px-1 h-6 relative bottom-[var(--gap)] mb-[-var(--gap)]`,
-  // styles.border,
 	css`
     border-style: none solid solid solid;
     border-top-left-radius: 0;
@@ -142,14 +142,11 @@ const ButtonsWrapper = styled.div(() => [
 ]);
 
 const CommentButton = styled.button(() => [
-  tw`flex px-1 h-3 space-x-0.5 ml-auto opacity-30 items-center `,
+  tw`flex px-1 h-3 space-x-0.5 ml-auto items-center `,
   css`
-    &:hover {
-      ${styles.ring}
+    & span {
+      font-size: 0.4rem;
     }
-		& span {
-			font-size: 0.4rem;
-		}
   `,
 ]);
 
@@ -175,9 +172,23 @@ const Topic = styled.div(() => [
   `,
 ]);
 
-const Video = styled.video(() => [tw`aspect-video w-full`]);
+const Video = styled.video(() => [tw`w-full rounded-sm aspect-video`]);
 
-const AuthorPicture = styled.div(() => [tw``]);
+const AuthorPicture = styled.div(() => [
+  css`
+    margin: auto 0;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    ${tw`flex items-center justify-center w-full h-auto`}
+
+    img {
+      width: auto;
+      object-fit: cover;
+      height: 100%;
+    }
+  `,
+]);
 
 const AuthorEmail = styled.div(() => [
   css`
