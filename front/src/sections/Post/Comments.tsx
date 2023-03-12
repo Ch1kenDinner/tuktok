@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -24,14 +25,14 @@ const Comments = (props: Props) => {
   if (state.isLoading) return <>LOADING</>;
 
   return (
-    <Wrapper className={props.className}>
+    <AnimWrapper variants={{hidden: {maxHeight: 'var(--comment-height)'}, shown: {height: 'auto'}}} className={props.className}>
       {mainState.comments.map((el, i) => (
         <Comment index={i} comment={el} key={el._id}>{el.text}</Comment>
       ))}
-    </Wrapper>
+    </AnimWrapper>
   );
 };
 
-const Wrapper = styled.div(() => [tw`my-2 space-y-3`]);
+const AnimWrapper = styled(motion.div)(() => [tw`space-y-3 overflow-hidden`]);
 
 export default styled(Comments)``;

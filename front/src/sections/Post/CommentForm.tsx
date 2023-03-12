@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useContext } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
@@ -28,7 +29,7 @@ const CommentForm = (props: Props) => {
   };
 
   return (
-    <Wrapper className={props.className}>
+    <AnimWrapper variants={{hidden: {height: 0}, shown: {}}} className={props.className}>
       <Textarea
         placeholder="Text"
         value={state.inputValue}
@@ -37,15 +38,15 @@ const CommentForm = (props: Props) => {
         }}
       />
       <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
-    </Wrapper>
+    </AnimWrapper>
   );
 };
 
-const Wrapper = styled.div(() => [tw`flex flex-col box-content text-[0.5rem]`]);
+const AnimWrapper = styled(motion.div)(() => [tw`overflow-hidden flex flex-col box-content text-[0.5rem]`]);
 
 const Textarea = styled.textarea(() => [
   tw`w-full p-1 resize-none text-[1em] text-pink-400 placeholder:(text-pink-600 text-[0.8em] font-bold opacity-20) outline-0`,
-  styles.ring,
+  styles.border,
   css`
     &::-webkit-scrollbar {
       display: none;

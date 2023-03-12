@@ -14,12 +14,12 @@ export interface IComment {
   text: string;
   createdAt: Date;
   updatedAt: Date;
-  // likes: string[];
-  // dislikes: string[];
+	rating: number,
 	reactions: {userId: string, reaction: string}[]
 }
 
 export interface IUser {
+	_id: string,
   picture: string;
   email: string;
 }

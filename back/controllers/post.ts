@@ -12,16 +12,7 @@ export const getPosts = async (req, res) => {
       searchTerm = { "topics.title": { $in: topics } };
     }
 
-    const posts = await PostModel.find(searchTerm
-		// 	, {
-    //   _id: 1,
-    //   title: 1,
-    //   createdBy: 1,
-    //   topics: 1,
-    //   videoId: 1,
-    //   createdAt: 1,
-    // }
-		)
+    const posts = await PostModel.find(searchTerm)
       .sort({ createdAt: -1 })
       .populate("createdBy");
 
@@ -34,14 +25,12 @@ export const getPosts = async (req, res) => {
 export const getComments = async (req, res) => {
   const { postId } = req.params;
 
-  const post = await PostModel.findById(new Types.ObjectId(postId)).populate({
-    path: "comments",
-    populate: { path: "author" },
-  });
+  const post = await PostModel.findById(new Types.ObjectId(postId));
+	if (!post) return res.status(400).json({message: 'Post not found'})
 
-  if (!post) return res.status(400).json({ message: "Post not found" });
+	const comments = await CommentModel.find({_id: {$in: post?.comments}}).sort('-rating').populate({path: 'author'})
 
-  return res.status(200).json({ comments: post.comments });
+  return res.status(200).json({ comments });
 };
 
 export const postComment = async (req, res) => {
@@ -70,12 +59,12 @@ export const postComment = async (req, res) => {
   post.comments.push(newCommment._id);
   await post.save();
 
-	post = await PostModel.findById(postId).populate({
-		path: "comments",
-		populate: { path: "author" },
-	});
+  post = await PostModel.findById(postId).populate({
+    path: "comments",
+    populate: { path: "author" },
+  });
 
-  return res.status(200).json({comments: post?.comments});
+  return res.status(200).json({ comments: post?.comments });
 };
 
 export const postVideo = async (req, res) => {

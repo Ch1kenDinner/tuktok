@@ -1,16 +1,15 @@
 import { model, Schema, Types } from "mongoose";
 
 export interface ICommentSchema {
-	author: Types.ObjectId,
-	text: string,
-	createdAt: Date,
-	updatedAt: Date,
-	reactions: {
-		reaction: string,
-		userId: Types.ObjectId
-	}[]
-	// likes?: Types.ObjectId[],
-	// dislikes?: Types.ObjectId[]
+  author: Types.ObjectId;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+  rating: number;
+  reactions: {
+    reaction: string;
+    userId: Types.ObjectId;
+  }[];
 }
 
 export const commentSchema = new Schema<ICommentSchema>({
@@ -22,6 +21,10 @@ export const commentSchema = new Schema<ICommentSchema>({
   text: {
     type: String,
     required: true,
+  },
+  rating: {
+    type: Number,
+    default: 0,
   },
   createdAt: {
     type: Date,
@@ -37,25 +40,25 @@ export const commentSchema = new Schema<ICommentSchema>({
       {
         reaction: String,
         userId: Types.ObjectId,
-      }
+      },
     ],
-		default: []
+    default: [],
   },
-  // likes: {
-  //   type: [Schema.Types.ObjectId],
-  // 	default: [],
-  //   ref: "user",
-  // },
-  // dislikes: {
-  //   type: [Schema.Types.ObjectId],
-  // 	default: [],
-  //   ref: "user",
-  // },
 });
 
-commentSchema.post('save', function() {
-	this.updatedAt = new Date(Date.now())
-})
+commentSchema.pre("save", function () {
+  this.updatedAt = new Date(Date.now());
 
-export const CommentModel = model<ICommentSchema>('comment', commentSchema)
+  let likesCount = 0;
+  let dislikesCount = 0;
+  this.reactions.forEach((el) => {
+    if (el.reaction == "like") {
+      likesCount += 1;
+    } else if (el.reaction == "dislike") {
+      dislikesCount += 1;
+    }
+  });
+  this.rating = likesCount - dislikesCount;
+});
 
+export const CommentModel = model<ICommentSchema>("comment", commentSchema);

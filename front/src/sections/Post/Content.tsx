@@ -33,7 +33,7 @@ const Content = (props: Props) => {
   };
 
 	const handleOpenComments = () => {
-		setMainState({isCommentsHidden: false})
+		setMainState({isCommentsHidden: !mainState.isCommentsHidden})
 	}
 
   return (

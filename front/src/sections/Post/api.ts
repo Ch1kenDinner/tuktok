@@ -21,3 +21,7 @@ export const fetchDeletePost = async (postId: string) => {
 export const fetchCommentLike = (reaction: 'like' | 'dislike', commentId: string) => {
 	return api.patch(apiRoutes.postLike(reaction, commentId ))
 }
+
+export const fetchPatchComment = async (commentId: string, body: Record<string, any>) => {
+	return await api.patch(apiRoutes.patchComment(commentId), body)
+}

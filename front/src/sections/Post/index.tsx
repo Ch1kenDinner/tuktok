@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { createContext, Dispatch } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
@@ -12,7 +13,8 @@ interface IInitState {
   post: IPost;
   isDeleted: boolean;
   comments: IComment[];
-	isCommentsHidden: boolean
+	isCommentsHidden: boolean,
+	currentEditingCommentId?: string
 }
 
 export const PostContext = createContext<{
@@ -35,7 +37,7 @@ const Post = (props: PostProps) => {
   if (mainState.isDeleted) return <></>;
 
   return (
-    <Wrapper className={props.className}>
+    <AnimWrapper animate={mainState.isCommentsHidden ? 'hidden' : 'shown'} className={props.className}>
       <PostContext.Provider value={{ mainState, setMainState }}>
         <PostContent post={props.post} />
         <CommentsWrapper>
@@ -44,14 +46,15 @@ const Post = (props: PostProps) => {
           <PostComments postId={props.post._id} />
         </CommentsWrapper>
       </PostContext.Provider>
-    </Wrapper>
+    </AnimWrapper>
   );
 };
 
-const Wrapper = styled.div(() => [
+const AnimWrapper = styled(motion.div)(() => [
   css`
     --user-picture-column-width: 1.5rem;
     --gap: 0.4rem;
+		--comment-height: 1.8rem;
   `,
 ]);
 
@@ -67,7 +70,7 @@ const Hr = styled.div(() => [
 ]);
 
 const CommentsWrapper = styled.div(() => [
-  tw`ml-[calc(var(--user-picture-column-width) + var(--gap))]`,
+  tw`w-[16rem] pl-[calc(var(--user-picture-column-width) + var(--gap))]`,
 ]);
 
 export default styled(Post)``;
