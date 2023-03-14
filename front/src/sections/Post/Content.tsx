@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { FaRegComment } from "react-icons/fa";
+import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { PostContext } from ".";
@@ -10,14 +11,14 @@ import { DP } from "../../common/types";
 import DeleteButton from "../../components/DeleteButton";
 import { ProfileContext } from "../../context/profileContext";
 import { useStateReducer } from "../../hooks/useStateReducer";
-import { fetchDeletePost } from "./api";
-import { IPost } from "./types";
+import { fetchDeletePost, fetchLikePost } from "./api";
 
 interface Props extends DP {}
 
 const Content = (props: Props) => {
   const [state, setState] = useStateReducer({
     isLoading: false,
+		fetchLikeLoading: false
   });
   const { mainState, setMainState } = useContext(PostContext);
   const profile = useContext(ProfileContext);
@@ -30,16 +31,31 @@ const Content = (props: Props) => {
     });
   };
 
-	const handleOpenComments = () => {
-		setMainState({isCommentsHidden: !mainState.isCommentsHidden})
-	}
+  const handleOpenComments = () => {
+    setMainState({ isCommentsHidden: !mainState.isCommentsHidden });
+  };
+
+  const handleLikePost = () => {
+    setState({ fetchLikeLoading: true });
+    fetchLikePost(mainState.post._id)
+      .then(({ status, data }) => {
+        if (status == 200)
+          setMainState({ post: { ...mainState.post, ...data } });
+      })
+      .finally(() => {
+        setState({ fetchLikeLoading: false });
+      });
+  };
 
   return (
     <Wrapper className={props.className}>
       <Title>{mainState.post.title}</Title>
       {mainState.post.createdBy.picture && (
         <AuthorPicture>
-          <img src={mainState.post.createdBy.picture} alt={"user_picture"}></img>
+          <img
+            src={mainState.post.createdBy.picture}
+            alt={"user_picture"}
+          ></img>
         </AuthorPicture>
       )}
       <Topics>
@@ -64,14 +80,22 @@ const Content = (props: Props) => {
             onConfirm={handleDeletePost}
           />
         )}
-        <CommentButton onClick={handleOpenComments}>
+        <ActionButton disabled={state.fetchLikeLoading} onClick={handleLikePost}>
+          {mainState.post.isLiked ? (
+            <MdOutlineFavorite />
+          ) : (
+            <MdOutlineFavoriteBorder />
+          )}
+          <span>{mainState.post.likes}</span>
+        </ActionButton>
+        <ActionButton onClick={handleOpenComments}>
           <FaRegComment />
           <span>
             {mainState.comments.length == 0
               ? "Write first comment!"
               : mainState.comments.length}
           </span>
-        </CommentButton>
+        </ActionButton>
       </ButtonsWrapper>
     </Wrapper>
   );
@@ -90,16 +114,20 @@ const Wrapper = styled.div(() => [
       ". btnsWrapper btnsWrapper"
       / var(--user-picture-column-width) 1fr;
 
+    ${DeleteButton} {
+      ${tw`mr-auto`}
+    }
+
     @media (hover: hover) {
-      ${CommentButton}, ${DeleteButton} {
+      ${ActionButton}, ${DeleteButton} {
         opacity: 0.3;
       }
-      &:hover ${DeleteButton}, &:hover ${CommentButton} {
+      &:hover ${DeleteButton}, &:hover ${ActionButton} {
         opacity: 1;
       }
-      ${CommentButton}:hover {
-				${styles.ring}
-			}
+      ${ActionButton}:hover {
+        ${styles.ring}
+      }
     }
 
     ${Title} {
@@ -127,8 +155,8 @@ const Wrapper = styled.div(() => [
 ]);
 
 const ButtonsWrapper = styled.div(() => [
-  tw`flex items-center px-1 h-6 relative bottom-[var(--gap)] mb-[-var(--gap)]`,
-	css`
+  tw`flex items-center gap-x-1 justify-end px-1 h-6 relative bottom-[var(--gap)] mb-[-var(--gap)]`,
+  css`
     border-style: none solid solid solid;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -139,8 +167,8 @@ const ButtonsWrapper = styled.div(() => [
   `,
 ]);
 
-const CommentButton = styled.button(() => [
-  tw`flex px-1 h-3 space-x-0.5 ml-auto items-center `,
+const ActionButton = styled.button(() => [
+  tw`flex px-1 h-3 space-x-0.5 items-center `,
   css`
     & span {
       font-size: 0.4rem;

@@ -95,9 +95,6 @@ const Comment = (props: Props) => {
 		}
 	}, [mainState.currentEditingCommentId])
 
-	console.log('profile?.user._id', profile?.user._id)
-	console.log('props.comment.author._id', props.comment.author._id)
-
   return (
     <Wrapper className={props.className}>
       <UserPicture src={props.comment.author.picture} />

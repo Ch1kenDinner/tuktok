@@ -11,6 +11,7 @@ export const apiRoutes = {
   getPosts: "/post/all",
   getPostsByTopics: "/post/byTopics",
   postPost: "/post/upload",
+	likePost: (postId: string) => `/post/${postId}/like`,
   getVideo: (videoId: string) => `/video/${videoId}`,
   uploadAvatar: "/user/upload/avatar",
   getComments: (postId: string) => `/post/${postId}/comments`,

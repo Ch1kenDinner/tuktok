@@ -6,6 +6,8 @@ export interface IPost {
   topics: { title: string; icon?: string }[];
 	comments: IComment[],
   createdAt: Date;
+	likes: number,
+	isLiked: boolean
 }
 
 export interface IComment {
@@ -22,5 +24,6 @@ export interface IUser {
 	_id: string,
   picture: string;
   email: string;
-	username: string
+	username: string,
+	likePosts: string[]
 }

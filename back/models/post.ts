@@ -10,6 +10,7 @@ export interface IPostSchema {
   updatedAt: Date;
 	comments: Types.ObjectId[]
   topics: ITopicSchema[];
+	likes?: number
 }
 
 const postSchema = new Schema<IPostSchema>({
@@ -42,6 +43,11 @@ const postSchema = new Schema<IPostSchema>({
   topics: {
     type: [topicSchema],
   },
+	likes: {
+		type: Number,
+		default: 0,
+		min: 0
+	}
 });
 
 postSchema.post("save", function () {
