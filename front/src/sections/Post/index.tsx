@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { createContext, Dispatch } from "react";
+import { createContext, Dispatch, useEffect, useContext } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { DP } from "../../common/types";
+import { ProfileContext } from "../../context/profileContext";
 import { useStateReducer } from "../../hooks/useStateReducer";
 import CommentForm from "./CommentForm";
 import PostComments from "./Comments";
@@ -13,8 +14,8 @@ interface IInitState {
   post: IPost;
   isDeleted: boolean;
   comments: IComment[];
-	isCommentsHidden: boolean,
-	currentEditingCommentId?: string
+  isCommentsHidden: boolean;
+  currentEditingCommentId?: string;
 }
 
 export const PostContext = createContext<{
@@ -31,19 +32,23 @@ const Post = (props: PostProps) => {
     post: props.post,
     isDeleted: false,
     comments: [],
-		isCommentsHidden: true
+    isCommentsHidden: true,
   });
+	const profile = useContext(ProfileContext)
 
   if (mainState.isDeleted) return <></>;
 
   return (
-    <AnimWrapper animate={mainState.isCommentsHidden ? 'hidden' : 'shown'} className={props.className}>
+    <AnimWrapper
+      animate={mainState.isCommentsHidden ? "hidden" : "shown"}
+      className={props.className}
+    >
       <PostContext.Provider value={{ mainState, setMainState }}>
-        <PostContent post={props.post} />
+        <PostContent />
         <CommentsWrapper>
-          <CommentForm postId={props.post._id} />
+          {profile && <CommentForm />}
           <Hr />
-          <PostComments postId={props.post._id} />
+          <PostComments />
         </CommentsWrapper>
       </PostContext.Provider>
     </AnimWrapper>
@@ -54,7 +59,7 @@ const AnimWrapper = styled(motion.div)(() => [
   css`
     --user-picture-column-width: 1.5rem;
     --gap: 0.4rem;
-		--comment-height: 1.8rem;
+    --comment-height: 1.8rem;
   `,
 ]);
 

@@ -32,7 +32,7 @@ const Comment = (props: Props) => {
   const { mainState, setMainState } = useContext(PostContext);
 
   const handleLike = (reaction: "like" | "dislike") => async () => {
-    setState({ isLoading: true });
+    setState({ isLoading: true, isEditing: false });
     fetchCommentLike(reaction, props.comment._id).then(({ status }) => {
       if (status == 200)
         fetchGetComments(mainState.post._id)
@@ -95,10 +95,13 @@ const Comment = (props: Props) => {
 		}
 	}, [mainState.currentEditingCommentId])
 
+	console.log('profile?.user._id', profile?.user._id)
+	console.log('props.comment.author._id', props.comment.author._id)
+
   return (
     <Wrapper className={props.className}>
       <UserPicture src={props.comment.author.picture} />
-      <Username>{props.comment.author.email}</Username>
+      <Username>{props.comment.author.username}</Username>
       <Text>
         {state.isEditing ? (
           <EditingTextarea
@@ -195,7 +198,7 @@ const Wrapper = styled.div(() => [
   `,
 ]);
 
-const UserPicture = styled.img(() => [tw`h-full aspect-square rounded-[50%]`]);
+const UserPicture = styled.img(() => [tw`h-full object-cover aspect-square rounded-[50%]`]);
 
 const Username = styled.div(() => [tw`text-[0.7em]`]);
 

@@ -8,9 +8,7 @@ import { DP } from "../../common/types";
 import { useStateReducer } from "../../hooks/useStateReducer";
 import { fetchPostComment } from "./api";
 
-interface Props extends DP {
-  postId: string;
-}
+interface Props extends DP {}
 
 const CommentForm = (props: Props) => {
   const [state, setState] = useStateReducer({
@@ -21,28 +19,42 @@ const CommentForm = (props: Props) => {
 
   const handleSubmit = () => {
     setState({ isLoading: true });
-    fetchPostComment(props.postId, {
+    fetchPostComment(mainState.post._id, {
       comment: { text: state.inputValue },
-    }).then((comments) => {
-      setMainState({ comments });
-    });
+    })
+      .then((comments) => {
+        setMainState({ comments });
+      })
+      .finally(() => {
+        setState({ isLoading: false, inputValue: "" });
+      });
   };
 
   return (
-    <AnimWrapper variants={{hidden: {height: 0}, shown: {}}} className={props.className}>
+    <AnimWrapper
+      animate={mainState.isCommentsHidden ? "hidden" : "shown"}
+      initial="hidden"
+      variants={{ hidden: { height: 0 }, shown: { height: "auto" } }}
+      className={props.className}
+    >
       <Textarea
+        disabled={state.isLoading}
         placeholder="Text"
         value={state.inputValue}
         onChange={(e) => {
           setState({ inputValue: e.target.value });
         }}
       />
-      <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+      <SubmitButton disabled={state.isLoading} onClick={handleSubmit}>
+        Submit
+      </SubmitButton>
     </AnimWrapper>
   );
 };
 
-const AnimWrapper = styled(motion.div)(() => [tw`overflow-hidden flex flex-col box-content text-[0.5rem]`]);
+const AnimWrapper = styled(motion.div)(() => [
+  tw`overflow-hidden flex flex-col box-content text-[0.5rem]`,
+]);
 
 const Textarea = styled.textarea(() => [
   tw`w-full p-1 resize-none text-[1em] text-pink-400 placeholder:(text-pink-600 text-[0.8em] font-bold opacity-20) outline-0`,

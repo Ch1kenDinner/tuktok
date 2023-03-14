@@ -12,7 +12,7 @@ const Navbar = () => {
   const createPostLinkVisibility = () => {
     if (location.pathname.includes(browserRoutes.createPost)) return false;
 
-		return true
+    return true;
   };
 
   return (

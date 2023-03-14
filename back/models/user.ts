@@ -2,6 +2,7 @@ import { model, Schema, Types } from "mongoose";
 
 export interface IUserSchema {
   email: string;
+	username?: string,
   password?: string;
   picture?: string;
   sub?: string;
@@ -15,6 +16,10 @@ export const userSchema = new Schema<IUserSchema>({
     type: String,
     require: true,
   },
+	username: {
+		type: String,
+		default: function() {return (this as any).email } 
+	},
   password: {
     type: String,
   },

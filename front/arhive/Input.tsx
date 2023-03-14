@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
+import styles from "../common/styles";
 import { DPInput } from "../common/types";
 
 interface Props extends DPInput {
@@ -21,12 +22,15 @@ const Input = (props: Props) => {
   );
 };
 
-const Wrapper = styled.div(({ isDisabled }: { isDisabled?: boolean }) => [
-  tw`flex px-[0.4rem] py-[0.2rem] text-[0.5rem] min-w-0 items-center space-x-0.5 text-pink-600`,
+const Wrapper = styled.div(({isDisabled}: {isDisabled?: boolean}) => [
+  tw`flex box-content text-[0.5rem] items-center space-x-0.5 text-pink-600 border-2 border-pink-400 rounded-sm`,
+  css`
+    padding: 0.2rem 0.4rem;
+  `
 ]);
 
 const InputEl = styled.input(() => [
-  tw`outline-0 grow min-w-0 h-full placeholder:(text-pink-200)`,
+  tw`outline-0 grow h-full placeholder:(text-pink-200)`,
 ]);
 
 const ErrorMessage = styled.div(() => [

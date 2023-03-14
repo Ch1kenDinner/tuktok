@@ -89,16 +89,14 @@ const TopicsInput = (props: Props) => {
   };
 
   const handleBlur = (e) => {
-    if (
-      ![...wrapperRef.current!.getElementsByTagName("*")].includes(e.target)
-    ) {
+    if (!wrapperRef.current.contains(e.target)) {
       setState({ isOpened: false });
       window.removeEventListener("pointerdown", handleBlur);
     }
   };
 
   const handleOpen = () => {
-    if (state.isLoading) return;
+    if (state.isLoading || props.disabled) return;
     window.addEventListener("pointerdown", handleBlur);
     setState({ isOpened: true });
     return () => window.removeEventListener("pointerdown", handleBlur);
@@ -210,7 +208,7 @@ const Wrapper = styled.div(() => [tw`relative`]);
 
 const InputWrapper = styled.div(({ isOpened }: { isOpened: boolean }) => [
   tw`flex py-[0.2rem] px-[0.4rem]`,
-  styles.ring,
+  styles.border,
   isOpened && tw`rounded-b-none`,
 ]);
 
@@ -250,7 +248,8 @@ const AddTagButton = styled.button(() => [
 ]);
 
 const TagsWrapper = styled.div(({ isOpened }: { isOpened: boolean }) => [
-  tw`flex gap-1 overflow-x-auto bg-white border-2 border-pink-400 rounded-sm`,
+  tw`z-10 flex gap-1 overflow-x-auto bg-white`,
+	styles.border,
   css`
     padding: 0.2rem 0.4rem;
 

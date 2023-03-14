@@ -1,28 +1,26 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { CiLogin, CiLogout } from "react-icons/ci";
 import { MdOutlineEdit } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { api, apiRoutes } from "../api";
-import { convertToBase64 } from "../common/helpers";
-import { DP } from "../common/types";
-import { ProfileContext } from "../context/profileContext";
-import { mainActions } from "../redux/mainSlice";
+import { api, apiRoutes } from "../src/api";
+import customEvents from "../src/common/customEvents";
+import { convertToBase64 } from "../src/common/helpers";
+import { DP } from "../src/common/types";
+import { ProfileContext } from "../src/context/profileContext";
+import { mainActions } from "../src/redux/mainSlice";
 
-const User = ({ className }: DP) => {
-  const [user, setUser] = useState<{ picture: string; email: string }>();
+interface Props extends DP {}
 
+const User = (props: Props) => {
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
-	// const profile = localStorage.getItem("profile");
-	const profile = useContext(ProfileContext)
+  const profile = useContext(ProfileContext);
 
   const handleLoginClick = () => {
-    dispatch(
-      mainActions.setField({ loginFormVisibility: true })
-    );
+    dispatch(mainActions.setField({ loginFormVisibility: true }));
   };
 
   const handleLogout = () => {
@@ -32,52 +30,46 @@ const User = ({ className }: DP) => {
 
   const handleInputChange = async (e) => {
     const file = e.target.files[0];
-    const {result: base64}: any = await convertToBase64(file);
+    const { result: base64 }: any = await convertToBase64(file);
     api.patch(apiRoutes.uploadAvatar, { base64 }).then(({ data }) => {
-      // const profile = localStorage.getItem("profile");
       if (profile) {
-        // const { token } = JSON.parse(profile);
         localStorage.setItem(
           "profile",
-          JSON.stringify({ token: profile.token, user: data.user })
+          JSON.stringify({ ...profile, user: data.user })
         );
-				setUser(data.user)
+        window.dispatchEvent(new Event(customEvents.localStorageChange));
       }
     });
   };
 
-  // useEffect(() => {
-  //   if (profile) {
-  //     setUser(JSON.parse(profile).user);
-  //   }
-  // }, [profile]);
-
-  const returnUser = () => {
-    if (!user) {
-      return (
+  if (!profile || !profile.user) {
+    return (
+      <Wrapper className={props.className}>
         <LoginButton onClick={handleLoginClick}>
           <p>Log In</p>
           <CiLogin />
         </LoginButton>
-      );
-    }
-    return (
-      <>
-        <PictureLabel>
-          <MdOutlineEdit />
-          <input onChange={handleInputChange} accept={'image/png, image/jpeg'} type="file" ref={inputRef} />
-          <Image src={user.picture} />
-        </PictureLabel>
-        <Username>{user.email}</Username>
-        <LogoutButton onClick={handleLogout}>
-          <CiLogout />
-        </LogoutButton>
-      </>
+      </Wrapper>
     );
-  };
+  }
 
   return (
-    <Wrapper className={className}>{returnUser()}</Wrapper>
+    <Wrapper className={props.className}>
+      <PictureLabel>
+        <MdOutlineEdit />
+        <input
+          onChange={handleInputChange}
+          accept={"image/png, image/jpeg"}
+          type="file"
+          ref={inputRef}
+        />
+        <Image src={profile.user.picture} />
+      </PictureLabel>
+      <Username>{profile.user.email}</Username>
+      <LogoutButton onClick={handleLogout}>
+        <CiLogout />
+      </LogoutButton>
+    </Wrapper>
   );
 };
 
@@ -104,7 +96,6 @@ const Username = styled.p(() => [tw``]);
 const LogoutButton = styled.button(() => [tw`p-2 rounded-[50%]`]);
 
 const Image = styled.img(() => [tw`object-cover h-full w-auto`]);
-
 
 const PictureLabel = styled.label(() => [
   tw`relative flex items-center justify-center rounded-[50%] overflow-hidden aspect-square h-full mr-1`,

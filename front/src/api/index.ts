@@ -17,7 +17,8 @@ export const apiRoutes = {
   postComment: (postId: string) => `/post/${postId}/comment`,
   deletePost: (postId: string) => `post/${postId}`,
 	postLike: (type: 'like' | 'dislike', commentId: string) => `/comment/${commentId}/${type}`,
-	patchComment: (commentId: string) => `/comment/${commentId}`
+	patchComment: (commentId: string) => `/comment/${commentId}`,
+	patchUser: () => '/user'
 };
 
 export const api = axios.create({ baseURL: BASE_URL });

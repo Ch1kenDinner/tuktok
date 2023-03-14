@@ -43,6 +43,8 @@ export default <F extends Record<string, any>>(
     });
   };
 
+	const setField = <T extends keyof F>(field: T) => (value: F[T]) => {setFields({[field]: value} as any)}
+
   const isValid = () => {
     return !!!Object.values(errors).find((el) => el && el.length);
   };
@@ -51,5 +53,5 @@ export default <F extends Record<string, any>>(
     validate();
   }, [fields]);
 
-  return { fields, setFields, errors, isValid };
+  return { fields, setField, setFields, errors, isValid };
 };

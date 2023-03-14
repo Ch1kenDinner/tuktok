@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { api } from "../api";
 import customEvents from "../common/customEvents";
+import { setLocalStorage } from "../common/helpers";
 import styles from "../common/styles";
 import { DP } from "../common/types";
 import Input from "../components/Input";
@@ -70,8 +71,7 @@ const Login = ({ className }: DP) => {
     api
       .post("/login", response)
       .then(({ data }) => {
-        localStorage.setItem("profile", JSON.stringify(data));
-        window.dispatchEvent(new Event(customEvents.localStorageChange));
+				setLocalStorage('profile', data)
         dispatch(mainActions.setField({ loginFormVisibility: false }));
       })
       .catch((err) => {
@@ -135,28 +135,21 @@ const Login = ({ className }: DP) => {
 };
 
 const Wrapper = styled.div(() => [
-  tw`absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center`,
+  tw`absolute top-0 bg-[rgba(0, 0, 0, 0.3)] bottom-0 left-0 right-0 z-10 flex items-center justify-center`,
   css`
-    background-color: rgba(0, 0, 0, 0.3);
+    ${Input} {
+      ${styles.border}
+    }
   `,
 ]);
 
 const Form = styled.form(() => [
-  tw`box-content p-5 space-y-1 bg-white rounded-lg`,
-  css`
-    width: 10rem;
-    /* width: max(10rem, 33vw); */
-  `,
+  tw`box-content p-5 w-[10rem] space-y-1 bg-white rounded-lg`,
 ]);
 
 const SubmitButton = styled.button(() => [
-  tw`w-full text-pink-800 uppercase`,
-  styles.ring,
-  css`
-    font-weight: 500;
-    font-size: 0.5rem;
-    padding: 0.2rem 0.4rem;
-  `,
+  tw`w-full font-bold text-pink-800 text-[0.5rem] px-2 py-1 uppercase`,
+  styles.border,
 ]);
 
 const GoogleWrapper = styled.div(() => [tw`flex justify-center h-3`]);

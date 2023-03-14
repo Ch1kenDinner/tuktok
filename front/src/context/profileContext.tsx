@@ -6,6 +6,7 @@ interface IProfile {
 	user?: {
 		picture: string,
 		email: string,
+		username: string,
 		_id: string
 	}
 }

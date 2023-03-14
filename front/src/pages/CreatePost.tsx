@@ -6,9 +6,9 @@ import { api, apiRoutes } from "../api";
 import routes from "../common/browserRoutes";
 import styles from "../common/styles";
 import { DP } from "../common/types";
-import FileInput from "../components/FileInput";
 import Input from "../components/Input";
 import TopicsInput, { ITopic } from "../components/TopicsInput";
+import VideoInput from "../components/VideoInput";
 import useFormValidation, {
   defaultValidateRules,
   IRules,
@@ -80,7 +80,7 @@ const CreatePost = ({ className }: DP) => {
         { headers: { "Content-Type": "multipart/form-data" } }
       )
       .catch((err) => {
-				console.log('err', err)
+        console.log("err", err);
         dispatch(
           mainActions.setField({
             popupMessage: {
@@ -121,7 +121,7 @@ const CreatePost = ({ className }: DP) => {
           placeholder="Title"
           errorMessage={errors.title}
         />
-        <FileInput
+        <VideoInput
           file={fields.video}
           setFile={(video: File) => setFields({ video })}
           disabled={state.isLoading}
@@ -142,6 +142,15 @@ const CreatePost = ({ className }: DP) => {
 
 const Wrapper = styled.div(() => [
   tw`flex flex-col items-center mt-1 space-y-2 text-pink-600 `,
+  css`
+    ${Input} {
+      ${styles.border}
+    }
+    ${VideoInput} {
+			${styles.border}
+			${tw`py-1`}
+		}
+  `,
 ]);
 
 const Header = styled.h1(() => [tw`font-bold`]);

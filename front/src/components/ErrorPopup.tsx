@@ -63,21 +63,18 @@ const AnimWrapper = styled(motion.div)(() => [
 ]);
 
 const Text = styled.p(() => [
-  tw`text-red-600`,
-  css`
-    font-size: 0.4rem;
-  `,
+  tw`text-red-600 text-[0.4rem]`,
 ]);
 
 const AnimBar = styled(motion.div)(() => [
-  tw`bg-red-600`,
-  css`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 0.1rem;
-  `,
+  tw`bg-red-600 absolute bottom-0 left-0 right-0 h-[0.1rem]`,
+  // css`
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   right: 0;
+  //   height: 0.1rem;
+  // `,
 ]);
 
 export default styled(ErrorPopup)``;

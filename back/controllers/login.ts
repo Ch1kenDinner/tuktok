@@ -69,6 +69,6 @@ export const postLogin = async (req, res) => {
 
   return res.status(200).json({
     token,
-    user: { picture: existingUser.picture, email: existingUser.email, _id: existingUser._id },
+    user: { picture: existingUser.picture, email: existingUser.email, username: existingUser.username, _id: existingUser._id },
   });
 };

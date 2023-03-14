@@ -13,9 +13,7 @@ import { useStateReducer } from "../../hooks/useStateReducer";
 import { fetchDeletePost } from "./api";
 import { IPost } from "./types";
 
-interface Props extends DP {
-  post: IPost;
-}
+interface Props extends DP {}
 
 const Content = (props: Props) => {
   const [state, setState] = useStateReducer({
@@ -26,7 +24,7 @@ const Content = (props: Props) => {
 
   const handleDeletePost = () => {
     setState({ isLoading: true });
-    fetchDeletePost(props.post._id).then(() => {
+    fetchDeletePost(mainState.post._id).then(() => {
       setState({ isLoading: false });
       setMainState({ isDeleted: true });
     });
@@ -38,29 +36,29 @@ const Content = (props: Props) => {
 
   return (
     <Wrapper className={props.className}>
-      <Title>{props.post.title}</Title>
-      {props.post.createdBy.picture && (
+      <Title>{mainState.post.title}</Title>
+      {mainState.post.createdBy.picture && (
         <AuthorPicture>
-          <img src={props.post.createdBy.picture} alt={"user_picture"}></img>
+          <img src={mainState.post.createdBy.picture} alt={"user_picture"}></img>
         </AuthorPicture>
       )}
       <Topics>
-        {props.post.topics.map((el) => (
+        {mainState.post.topics.map((el) => (
           <Topic>{el.title}</Topic>
         ))}
       </Topics>
       <Video controls>
         <source
-          src={BASE_URL + apiRoutes.getVideo(props.post.videoId)}
+          src={BASE_URL + apiRoutes.getVideo(mainState.post.videoId)}
           type="video/mp4"
         />
       </Video>
-      <AuthorEmail>{props.post.createdBy.email}</AuthorEmail>
+      <Username>{mainState.post.createdBy.username}</Username>
       <CreatedAt>
-        Uploaded: {dayjs(props.post.createdAt).format("DD.MM.YYYY")}
+        Uploaded: {dayjs(mainState.post.createdAt).format("DD.MM.YYYY")}
       </CreatedAt>
       <ButtonsWrapper>
-        {profile?.user?._id == props.post.createdBy._id && (
+        {profile?.user?._id == mainState.post.createdBy._id && (
           <DeleteButton
             disabled={state.isLoading}
             onConfirm={handleDeletePost}
@@ -116,7 +114,7 @@ const Wrapper = styled.div(() => [
     ${AuthorPicture} {
       grid-area: picture;
     }
-    ${AuthorEmail} {
+    ${Username} {
       grid-area: email;
     }
     ${CreatedAt} {
@@ -190,7 +188,7 @@ const AuthorPicture = styled.div(() => [
   `,
 ]);
 
-const AuthorEmail = styled.div(() => [
+const Username = styled.div(() => [
   css`
     font-size: 0.5rem;
     font-weight: 600;

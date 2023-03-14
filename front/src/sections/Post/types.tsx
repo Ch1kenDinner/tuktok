@@ -2,7 +2,7 @@ export interface IPost {
   _id: string;
   title: string;
   videoId: string;
-  createdBy: { picture?: string; email: string; _id: string };
+  createdBy: IUser;
   topics: { title: string; icon?: string }[];
 	comments: IComment[],
   createdAt: Date;
@@ -22,4 +22,5 @@ export interface IUser {
 	_id: string,
   picture: string;
   email: string;
+	username: string
 }

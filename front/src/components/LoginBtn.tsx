@@ -20,10 +20,7 @@ const LoginBtn = ({className}: DPButton) => {
 }
 
 const Button = styled.button(() => [
-	tw`w-full py-1 text-pink-600 border-[1px] rounded-sm border-pink-400`,
-	css`
-		font-size: 0.6rem;
-	`
+	tw`w-full text-[0.6rem] py-1 text-pink-600 border-[1px] rounded-sm border-pink-400`,
 ])
 
 export default styled(LoginBtn)``;

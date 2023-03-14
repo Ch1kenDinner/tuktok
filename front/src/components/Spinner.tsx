@@ -40,8 +40,8 @@ const Wrapper = styled.div(() => [
 ]);
 
 const AnimCircle = styled(motion.div)(() => [
-  style.circle,
   tw`bg-pink-600`,
+  style.circle,
   css`
     width: 4em;
     box-shadow: 0 0 0.1em 0.1em rgb(219 39 119 / var(--tw-bg-opacity));
